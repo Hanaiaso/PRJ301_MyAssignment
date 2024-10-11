@@ -4,8 +4,6 @@
  */
 package Login.Controller;
 
-import Login.Entity.User;
-import dal.UserDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +15,7 @@ import java.io.PrintWriter;
  *
  * @author LEGION
  */
-public class LoginController extends HttpServlet {
+public class Main extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,10 +34,10 @@ public class LoginController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginController</title>");            
+            out.println("<title>Servlet Main</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet Main at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,7 +55,7 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("login.html").forward(request, response);
+        request.getRequestDispatcher("main.jsp").forward(request, response);
     }
 
     /**
@@ -71,22 +69,7 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String user = request.getParameter("username");
-        String pass = request.getParameter("password");
-        
-        UserDBContext db = new UserDBContext();
-        User account = db.get(user, pass);
-        
-        if(account!=null)
-        {
-            request.getSession().setAttribute("account", account);
-            response.getWriter().println("login successful!");
-            response.sendRedirect("main");
-        }
-        else
-        {
-            response.getWriter().println("login failed!");
-        }
+        processRequest(request, response);
     }
 
     /**
