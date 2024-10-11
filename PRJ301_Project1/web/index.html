@@ -1,18 +1,53 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
-<html>
-    <head>
-        <title>COMPANY</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRE COMPANY</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Màu nền cho toàn bộ trang */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Chiều cao màn hình */
+        }
+        .container {
+            background-color: #e0f7fa; /* Màu nền xanh nước biển nhạt */
+            padding: 20px;
+            border-radius: 10px; /* Bo góc */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center; /* Căn giữa nội dung */
+            width: 1000px; /* Độ rộng của khung login */
+        }
+        .header {
+            margin-bottom: 20px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.8em;
+        }
+        img.logo {
+            max-width: 50%; /* Chiều rộng tối đa cho logo */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <img src="img/images.png" alt="Logo" class="logo">           
+        </div>
         <form action="login" method="GET">
             <input type="submit" value="LOGIN" />
         </form>
-        
-    </body>
+        <div class="footer">
+            <p>Contact: info@trecompany.com</p> 
+        </div>
+    </div>
+
+</body>
 </html>
