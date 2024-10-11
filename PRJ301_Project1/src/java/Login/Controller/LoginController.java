@@ -4,6 +4,8 @@
  */
 package Login.Controller;
 
+import Login.Entity.User;
+import dal.UserDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,7 +57,7 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.getRequestDispatcher("login.html").forward(request, response);
     }
 
     /**
@@ -69,7 +71,22 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String user = request.getParameter("username");
+        String pass = request.getParameter("password");
+        
+        UserDBContext db = new UserDBContext();
+        User account = db.get(user, pass);
+        
+        if(account!=null)
+        {
+            request.getSession().setAttribute("account", account);
+            
+            response.getWriter().println("login successful!");
+        }
+        else
+        {
+            response.getWriter().println("login failed!");
+        }
     }
 
     /**
