@@ -20,7 +20,7 @@
             border-radius: 10px; /* Bo góc */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             text-align: center; /* Căn giữa nội dung */
-            width: 1000px; /* Độ rộng của khung login */
+            width: 400px; /* Độ rộng của khung login */
         }
         .header {
             margin-bottom: 20px;
@@ -32,6 +32,20 @@
         img.logo {
             max-width: 50%; /* Chiều rộng tối đa cho logo */
             height: auto;
+            border-radius: 50px;
+        }
+        input[type="submit"] {
+            background-color: #007BFF; /* Màu nền của nút */
+            color: white; /* Màu chữ */
+            border: none; /* Không có đường viền */
+            border-radius: 5px; /* Bo góc */
+            padding: 10px 20px; /* Khoảng cách trong nút */
+            cursor: pointer; /* Con trỏ chuột khi di chuột lên nút */
+            font-size: 16px; /* Kích thước chữ */
+            transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3; /* Màu nền khi di chuột */
         }
     </style>
 </head>
@@ -46,6 +60,7 @@
         </form>
         <div class="footer">
             <p>Contact: info@trecompany.com</p> 
+            <p>Phone: 0986429391</p>
         </div>
     </div>
 
