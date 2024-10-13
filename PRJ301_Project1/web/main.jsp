@@ -13,7 +13,7 @@
     </head>
     <body>
         <form action="main" method="POST">
-            Heeeeeeeeeeeeeeeeeee
+            ${requestScope.user}
         </form>
     </body>
 </html>

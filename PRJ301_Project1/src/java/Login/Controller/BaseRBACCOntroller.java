@@ -41,13 +41,24 @@ public abstract class BaseRBACCOntroller extends BaseAuthenticationController{
     protected abstract void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException;
     
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp, User account) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        if(isAuthorized(req, account))
+        {
+            doAuthorizedGet(req, resp, account);
+        }
+        else
+            resp.sendError(403, "You do not have right to access this feature!");
+    
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp, User account) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+    if(isAuthorized(req, account))
+        {
+            doAuthorizedPost(req, resp, account);
+        }
+        else
+            resp.sendError(403, "You do not have right to access this feature!");
     }
     
 }
