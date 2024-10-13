@@ -40,19 +40,18 @@ public class EmployeeListController extends BaseRBACCOntroller {
     }
 
     
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+   @Override
+    protected void doAuthorizedGet(HttpServletRequest request, HttpServletResponse response, User account)
+    throws ServletException, IOException {
+        processRequest(request, response);
+    } 
 
+ 
     @Override
-    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    protected void doAuthorizedPost(HttpServletRequest request, HttpServletResponse response, User account)
+    throws ServletException, IOException {
+        processRequest(request, response);
     }
 
-    @Override
-    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
 }

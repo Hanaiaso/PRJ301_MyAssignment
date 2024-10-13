@@ -20,7 +20,7 @@
                 <td>Gender</td>
                 <td>Dob</td>
                 <td>Address</td>
-                <td></td>
+                
             </tr>
             <c:forEach items="${requestScope.emps}" var="e">
              <tr>

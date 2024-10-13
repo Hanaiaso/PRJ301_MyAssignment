@@ -51,11 +51,11 @@ public class UserDBContext extends DBContext<User>{
     
     public ArrayList<Role> getRoles(String username) {
         String sql = "SELECT r.rid,r.rname,f.fid,f.fname,f.url FROM [User] u \n"
-                + "	INNER JOIN UserRole ur ON ur.username = u.username\n"
+                + "	INNER JOIN UserRole ur ON ur.uusername = u.uusername\n"
                 + "	INNER JOIN [Role] r ON r.rid = ur.rid\n"
                 + "	INNER JOIN RoleFeature rf ON r.rid = rf.rid\n"
                 + "	INNER JOIN Feature f ON f.fid = rf.fid\n"
-                + "WHERE u.username = ?\n"
+                + "WHERE u.uusername = ?\n"
                 + "ORDER BY r.rid, f.fid ASC";
         
         PreparedStatement stm = null;
