@@ -13,7 +13,11 @@
     </head>
     <body>
         <form action="main" method="POST">
-            ${requestScope.user}
+            
         </form>
+        
+        <a href="employee/list">
+            <button>Employee's List</button>
+        </a>
     </body>
 </html>
