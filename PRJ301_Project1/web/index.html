@@ -7,47 +7,98 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f8ff; /* Màu nền cho toàn bộ trang */
+            background-color: #f0f8ff;
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* Chiều cao màn hình */
+            height: 100vh;
         }
         .container {
-            background-color: #e0f7fa; /* Màu nền xanh nước biển nhạt */
-            padding: 20px;
-            border-radius: 10px; /* Bo góc */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: center; /* Căn giữa nội dung */
-            width: 400px; /* Độ rộng của khung login */
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 400px;
+            position: relative; /* Giữ vị trí của các phần tử */
         }
         .header {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         .footer {
             margin-top: 20px;
-            font-size: 0.8em;
+            font-size: 0.9em;
+            color: #888;
         }
         img.logo {
-            max-width: 50%; /* Chiều rộng tối đa cho logo */
+            max-width: 80px;
             height: auto;
             border-radius: 50px;
         }
-        input[type="submit"] {
-            background-color: #007BFF; /* Màu nền của nút */
-            color: white; /* Màu chữ */
-            border: none; /* Không có đường viền */
-            border-radius: 5px; /* Bo góc */
-            padding: 10px 20px; /* Khoảng cách trong nút */
-            cursor: pointer; /* Con trỏ chuột khi di chuột lên nút */
-            font-size: 16px; /* Kích thước chữ */
-            transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+        #showFormBtn {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 30px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+            position: absolute; /* Đặt nút LOGIN ở vị trí cố định */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Đảm bảo căn giữa */
         }
-        input[type="submit"]:hover {
-            background-color: #0056b3; /* Màu nền khi di chuột */
+        #showFormBtn:hover {
+            background-color: #0056b3;
+            transform: translate(-50%, -50%) scale(1.05); /* Hiệu ứng hover */
+        }
+        form {
+            margin-top: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        input[type="submit"], button.cancelBtn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        input[type="submit"]:hover, button.cancelBtn:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+        button.cancelBtn {
+            background-color: #dc3545;
+            width: 100%;
+        }
+        button.cancelBtn:hover {
+            background-color: #c82333;
+        }
+        .visible {
+            opacity: 1;
+            visibility: visible;
         }
     </style>
+
+    
 </head>
 <body>
 
@@ -55,14 +106,40 @@
         <div class="header">
             <img src="img/images.png" alt="Logo" class="logo">           
         </div>
-        <form action="login" method="GET">
-            <input type="submit" value="LOGIN" />
+        
+        <!-- Nút LOGIN để hiển thị form -->
+        <button id="showFormBtn">LOGIN</button>
+        
+        <!-- Form nhập username và password ban đầu sẽ ẩn -->
+        <form id="loginForm" action="login" method="POST">
+            <input type="text" name="username" placeholder="Username" required /><br/>
+            <input type="password" name="password" placeholder="Password" required /><br/>
+            <input type="submit" value="Login" />
+            <button type="button" class="cancelBtn">Cancel</button>
         </form>
+
         <div class="footer">
             <p>Contact: info@trecompany.com</p> 
             <p>Phone: 0986429391</p>
         </div>
     </div>
+    
+    <script>
+        const showFormBtn = document.getElementById('showFormBtn');
+        const loginForm = document.getElementById('loginForm');
+        const cancelBtn = document.querySelector('.cancelBtn');
 
+        // Khi nhấn vào nút LOGIN, hiển thị form và ẩn nút LOGIN
+        showFormBtn.addEventListener('click', function() {
+            loginForm.classList.add('visible'); // Hiện form
+            showFormBtn.style.display = 'none'; // Ẩn nút LOGIN
+        });
+
+        // Khi nhấn vào nút Cancel, ẩn form và hiển thị lại nút LOGIN
+        cancelBtn.addEventListener('click', function() {
+            loginForm.classList.remove('visible'); // Ẩn form
+            showFormBtn.style.display = 'block'; // Hiển thị lại nút LOGIN
+        });
+    </script>
 </body>
 </html>
