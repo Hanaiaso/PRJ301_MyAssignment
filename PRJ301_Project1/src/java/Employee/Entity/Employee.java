@@ -21,7 +21,16 @@ public class Employee {
     private User createdby;
     private User updatedby;
     private java.util.Date updatedtime; 
+    private Department dept;
 
+    public Department getDept() {
+        return dept;
+    }
+
+    public void setDept(Department dept) {
+        this.dept = dept;
+    }
+    
     public int getId() {
         return id;
     }
