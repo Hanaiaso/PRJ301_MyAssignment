@@ -139,6 +139,9 @@
         cancelBtn.addEventListener('click', function() {
             loginForm.classList.remove('visible'); // Ẩn form
             showFormBtn.style.display = 'block'; // Hiển thị lại nút LOGIN
+            // Xóa giá trị trong các trường input
+            document.querySelector('input[name="username"]').value = '';
+            document.querySelector('input[name="password"]').value = '';
         });
     </script>
 </body>
