@@ -80,12 +80,12 @@ public class LoginController extends HttpServlet {
         if(account!=null)
         {
             request.getSession().setAttribute("account", account);
-            response.getWriter().println("login successful!");
             response.sendRedirect("main");
         }
         else
-        {
-            response.getWriter().println("login failed!");
+        {      
+            request.setAttribute("errorMessage", "Invalid username or password!");
+            request.getRequestDispatcher("index.jsp").forward(request, response);
         }
     }
 

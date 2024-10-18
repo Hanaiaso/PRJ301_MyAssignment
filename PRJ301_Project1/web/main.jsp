@@ -12,12 +12,14 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <form action="main" method="POST">
-            
-        </form>
-        
-        <a href="employee/list">
-            <button>Employee's List</button>
-        </a>
+        <div>
+            <form action="main" method="POST">
+
+            </form>
+
+            <a href="employee/list">
+                <button>Employee's List</button>
+            </a>
+        </div>
     </body>
 </html>
