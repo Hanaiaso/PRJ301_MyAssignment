@@ -198,9 +198,37 @@ public class EmployeeDBContext extends DBContext<Employee> {
         }
     }
 
-    @Override
-    public void delete(Employee entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void delete(Employee[] employees) {
+        String sql_update = "UPDATE Employee SET isWork = 0 WHERE eid = ?";
+        PreparedStatement stm_update = null;
+
+        try {
+            // Bắt đầu chuẩn bị câu lệnh SQL
+            stm_update = connection.prepareStatement(sql_update);
+
+            // Duyệt qua từng employee để cập nhật
+            for (Employee employee : employees) {
+                stm_update.setInt(1, employee.getId());
+                stm_update.addBatch(); // Thêm vào batch để thực thi nhiều câu lệnh cùng lúc
+            }
+
+            // Thực thi batch
+            stm_update.executeBatch();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (stm_update != null) {
+                    stm_update.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     @Override
@@ -303,6 +331,30 @@ public class EmployeeDBContext extends DBContext<Employee> {
             }
         }
         return null;
+    }
+
+    @Override
+    public void delete(Employee entity) {
+        String sql_update = "DELETE FROM Employee\n"
+                + " WHERE eid = ?";
+
+        PreparedStatement stm_update = null;
+
+        try {
+
+            stm_update = connection.prepareStatement(sql_update);
+            stm_update.setInt(1, entity.getId());
+            stm_update.executeUpdate();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
 }

@@ -11,6 +11,16 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <script>
+            function removeEmployee(id)
+            {
+                var result = confirm("Are you sure?");
+                if(result)
+                {
+                    document.getElementById("frmRemoveEmployee"+id).submit();
+                }
+            }
+        </script>
     </head>
     <body>
         <form action="filter" method="GET">
@@ -58,7 +68,12 @@
                 <td>${e.dob}</td>
                 <td>${e.address}</td>
                 <td>${e.dept.name} - ${e.dept.type}</td>
-                <td><a href="update?id=${e.id}">Edit</a></td>
+                <td><a href="update?id=${e.id}">Edit |</a>
+                <input type="button" value="Remove" onclick="removeEmployee(${e.id})"/>
+                    <form id="frmRemoveEmployee${e.id}" action="delete" method="POST">
+                        <input type="hidden" name="id" value="${e.id}"/>
+                    </form>
+                </td>
             </tr>
             </c:forEach>
     </body>

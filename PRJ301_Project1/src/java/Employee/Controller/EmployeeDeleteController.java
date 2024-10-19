@@ -4,82 +4,51 @@
  */
 package Employee.Controller;
 
+import Employee.Entity.Department;
+import Employee.Entity.Employee;
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
+import dal.DepartmentDBContext;
+import dal.EmployeeDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 /**
  *
  * @author LEGION
  */
-public class EmployeeDeleteController extends HttpServlet {
+public class EmployeeDeleteController extends BaseRBACCOntroller {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet EmployeeDeleteController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet EmployeeDeleteController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+    @Override
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+      
+        EmployeeDBContext db = new EmployeeDBContext();
+        ArrayList<Employee> e = db.list();
+        if(e!=null)
+        {
+            DepartmentDBContext dbDept = new DepartmentDBContext();
+            ArrayList<Department> depts = dbDept.list();
+            req.setAttribute("e", e);
+            req.setAttribute("depts", depts);
+            req.getRequestDispatcher("../view/employee/delete.jsp").forward(req, resp);
         }
+        
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        int id = Integer.parseInt(req.getParameter("id"));
+        Employee e = new Employee();
+        e.setId(id);
+        EmployeeDBContext db = new EmployeeDBContext();
+        db.delete(e);
+        resp.sendRedirect("filter");
+        
     }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }
