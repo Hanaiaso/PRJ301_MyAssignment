@@ -48,6 +48,7 @@
                 <td>Dob</td>
                 <td>Address</td>
                 <td>Department</td>
+                <td></td>
             </tr>
             <c:forEach items="${requestScope.emps}" var="e">
                 <tr>
@@ -57,6 +58,7 @@
                 <td>${e.dob}</td>
                 <td>${e.address}</td>
                 <td>${e.dept.name} - ${e.dept.type}</td>
+                <td><a href="update?id=${e.id}">Edit</a></td>
             </tr>
             </c:forEach>
     </body>
