@@ -4,82 +4,81 @@
  */
 package Employee.Controller;
 
+import Employee.Entity.Department;
+import Employee.Entity.Employee;
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
+import dal.DepartmentDBContext;
+import dal.EmployeeDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
+import java.util.ArrayList;
 
 /**
  *
  * @author LEGION
  */
-public class EmployeeUpdateController extends HttpServlet {
+public class EmployeeUpdateController extends BaseRBACCOntroller {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet EmployeeUpdateController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet EmployeeUpdateController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+    @Override
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        int id = Integer.parseInt(req.getParameter("id"));
+        EmployeeDBContext db = new EmployeeDBContext();
+        Employee e = db.get(id);
+        if(e!=null)
+        {
+            DepartmentDBContext dbDept = new DepartmentDBContext();
+            ArrayList<Department> depts = dbDept.list();
+            req.setAttribute("e", e);
+            req.setAttribute("depts", depts);
+            req.getRequestDispatcher("../view/employee/update.jsp").forward(req, resp);
+        }
+        else
+        {
+            resp.sendError(404,"this employee does not exist!");
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+         //read parameters
+        String raw_id =req.getParameter("id");
+        String raw_name =req.getParameter("name");
+        String raw_gender = req.getParameter("gender");
+        String raw_dob = req.getParameter("dob");
+        String raw_address = req.getParameter("address");
+        String raw_did = req.getParameter("did");
+        String raw_salary = req.getParameter("salary");
+        
+        //validate params
+        
+        
+        //object binding
+        Employee e = new Employee();
+        e.setId(Integer.parseInt(raw_id));
+        e.setName(raw_name);
+        e.setAddress(raw_address);
+        e.setGender(raw_gender.equals("male"));
+        e.setDob(Date.valueOf(raw_dob));
+        e.setSalary(Double.parseDouble(raw_salary));
+        
+        Department d = new Department();
+        d.setId(Integer.parseInt(raw_did));
+        e.setDept(d);
+        
+        e.setUpdatedby(account);
+        //save data to database
+        
+        EmployeeDBContext db = new EmployeeDBContext();
+        db.update(e);
+        
+        //return results to user
+        resp.getWriter().println("Done");
     }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

@@ -17,11 +17,20 @@ public class Employee {
     private boolean gender;
     private String address;
     private Date dob;
+    private double salary;
     private boolean iswork;
     private User createdby;
     private User updatedby;
     private java.util.Date updatedtime; 
     private Department dept;
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
 
     public Department getDept() {
         return dept;

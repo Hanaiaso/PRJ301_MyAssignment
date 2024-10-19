@@ -16,48 +16,63 @@ import java.util.logging.Logger;
  *
  * @author LEGION
  */
-public class UserDBContext extends DBContext<User>{
+public class UserDBContext extends DBContext<User> {
 
-    public User get(String username, String password){
-        String sql = "SELECT uusername, udisplayname FROM [User] \n"
-                + "WHERE uusername = ? AND [upassword] = ?";
-        PreparedStatement stm = null;
-        User user = null;
-        
-        try {
-            stm = connection.prepareStatement(sql);
+    boolean isUserActive(String username) {
+        String sql = "SELECT isWork FROM [User] WHERE username = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setString(1, username);
-            stm.setString(2, password);
             ResultSet rs = stm.executeQuery();
-            if(rs.next()){
-                user = new User();
-                
-                user.setDisplayname(rs.getString("udisplayname"));
-                user.setUsername(rs.getString("uusername"));
+            if (rs.next()) {
+                return rs.getBoolean("isWork");
             }
         } catch (SQLException ex) {
             Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        } finally{
+        }
+        return false;
+    }
+
+    public User get(String username, String password) {
+        String sql = "SELECT username, displayname FROM [User] \n"
+                + "WHERE username = ? AND [password] = ?";
+        PreparedStatement stm = null;
+        User user = null;
+        if (isUserActive(username)) {
             try {
-                stm.close();
-                connection.close();
+                stm = connection.prepareStatement(sql);
+                stm.setString(1, username);
+                stm.setString(2, password);
+                ResultSet rs = stm.executeQuery();
+
+                if (rs.next()) {
+                    user = new User();
+
+                    user.setDisplayname(rs.getString("displayname"));
+                    user.setUsername(rs.getString("username"));
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    stm.close();
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
-            
         }
         return user;
     }
-    
+
     public ArrayList<Role> getRoles(String username) {
         String sql = "SELECT r.rid,r.rname,f.fid,f.fname,f.url FROM [User] u \n"
-                + "	INNER JOIN UserRole ur ON ur.uusername = u.uusername\n"
+                + "	INNER JOIN UserRole ur ON ur.username = u.username\n"
                 + "	INNER JOIN [Role] r ON r.rid = ur.rid\n"
                 + "	INNER JOIN RoleFeature rf ON r.rid = rf.rid\n"
                 + "	INNER JOIN Feature f ON f.fid = rf.fid\n"
-                + "WHERE u.uusername = ?\n"
+                + "WHERE u.username = ?\n"
                 + "ORDER BY r.rid, f.fid ASC";
-        
+
         PreparedStatement stm = null;
         ArrayList<Role> roles = new ArrayList<>();
         try {
@@ -66,17 +81,15 @@ public class UserDBContext extends DBContext<User>{
             ResultSet rs = stm.executeQuery();
             Role c_role = new Role();
             c_role.setId(-1);
-            while(rs.next())
-            {
+            while (rs.next()) {
                 int rid = rs.getInt("rid");
-                if(rid != c_role.getId())
-                {
+                if (rid != c_role.getId()) {
                     c_role = new Role();
                     c_role.setId(rid);
                     c_role.setName(rs.getString("rname"));
                     roles.add(c_role);
                 }
-                
+
                 Feature f = new Feature();
                 f.setId(rs.getInt("fid"));
                 f.setName(rs.getString("fname"));
@@ -86,9 +99,7 @@ public class UserDBContext extends DBContext<User>{
             }
         } catch (SQLException ex) {
             Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally
-        {
+        } finally {
             try {
                 stm.close();
                 connection.close();
@@ -96,11 +107,11 @@ public class UserDBContext extends DBContext<User>{
                 Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         return roles;
-    
+
     }
-    
+
     @Override
     public void insert(User entity) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -125,5 +136,5 @@ public class UserDBContext extends DBContext<User>{
     public User get(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
 }
