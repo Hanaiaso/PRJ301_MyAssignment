@@ -12,34 +12,45 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <form action="delete" method="POST">
-        <h2>Select Employees to Delete</h2>
+        <form action="deleteall" method="post">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <td>Id</td>
+                        <td>Name</td>
+                        <td>Gender</td>
+                        <td>Dob</td>
+                        <td>Address</td>
 
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Select</th>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Date of Birth</th>
-                    <th>Salary</th>
-                    <th>Department ID</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-            <c:forEach items="${requestScope.e}" var="emp">
-                <tr>
-                    <td><input type="checkbox" name="employeeIds" value="${requestScope.e.id}"></td>
-                    <td>${requestScope.e.id}</td>
-                    
-                </tr>
-            </c:forEach>>
-            </tbody>
-        </table>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach items="${requestScope.emps}" var="e">
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="employeeIds" value="${e.id}">
+                            </td>
+                            <td>${e.id}</td>
+                            <td>${e.name}</td>
+                            <td>
+                                <c:if test="${e.gender}">
+                                    Male
+                                </c:if>
+                                <c:if test="${!e.gender}">
+                                    Female
+                                </c:if>
 
-        <input type="submit" value="Delete Selected Employees">
-    </form>
+                            </td>
+                            <td>${e.dob}</td>
+                            <td>${e.address}</td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
+
+            <br>
+            <input type="submit" value="Delete Selected Employees">
+        </form>
+
     </body>
 </html>

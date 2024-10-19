@@ -66,7 +66,7 @@ public class EmployeeCreateController extends BaseRBACCOntroller{
         db.insert(e);
         
         //return results to user
-        resp.getWriter().println("Inserted "+ e.getId());
+        resp.sendRedirect("filter");
     }
 
 }

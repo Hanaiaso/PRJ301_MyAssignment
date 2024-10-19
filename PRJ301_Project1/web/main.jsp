@@ -26,9 +26,7 @@
             <a href="employee/create">
                 <button>Employee's Create</button>
             </a>
-            <a href="employee/update">
-                <button>Employee's Update</button>
-            </a>
+            
         </div>
     </body>
 </html>
