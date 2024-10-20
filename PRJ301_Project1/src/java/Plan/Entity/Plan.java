@@ -21,6 +21,19 @@ public class Plan {
     private boolean isDone;
     private ArrayList<PlanCampain> campains = new ArrayList<>();
 
+    public Plan() {
+    }
+
+    public Plan( String name, Date start, Date end, Department dept) {
+     
+        this.name = name;
+        this.start = start;
+        this.end = end;
+        this.dept = dept;
+        
+    }
+    
+    
     public int getId() {
         return id;
     }

@@ -28,7 +28,7 @@
                 </tr>
                 <c:forEach items="${requestScope.products}" var="p">
                  <tr>
-                     <td>${p.name}<input type="hidden" value="${p.id}" name="pid"/></td>
+                    <td>${p.name}<input type="hidden" value="${p.id}" name="pid"/></td>
                     <td><input type="text" name="quantity${p.id}"/></td>
                     <td><input type="text" name="cost${p.id}"/></td>
                 </tr>   

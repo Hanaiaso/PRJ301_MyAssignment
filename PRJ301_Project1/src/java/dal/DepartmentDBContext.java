@@ -34,7 +34,7 @@ public class DepartmentDBContext extends DBContext<Department>{
                 Department d = new Department();
                 d.setId(rs.getInt("did"));
                 d.setName(rs.getString("dname"));
-                d.setType(type);
+                d.setType(rs.getString("type"));
                 depts.add(d);
             }
 

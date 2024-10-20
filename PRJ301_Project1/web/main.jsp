@@ -29,6 +29,9 @@
              <a href="employee/deleteall">
                 <button>Employee's Delete</button>
             </a>
+             <a href="plan/create">
+                <button>Create Plan</button>
+            </a>
         </div>
     </body>
 </html>
