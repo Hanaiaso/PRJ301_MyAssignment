@@ -26,18 +26,7 @@ public class EmployeeDeleteController extends BaseRBACCOntroller {
 
     @Override
     protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
-      
-        EmployeeDBContext db = new EmployeeDBContext();
-        ArrayList<Employee> e = db.list();
-        if(e!=null)
-        {
-            DepartmentDBContext dbDept = new DepartmentDBContext();
-            ArrayList<Department> depts = dbDept.list();
-            req.setAttribute("e", e);
-            req.setAttribute("depts", depts);
-            req.getRequestDispatcher("../view/employee/delete.jsp").forward(req, resp);
-        }
-        
+         resp.sendError(403,"you cannot access the feature using this way!");
     }
 
     @Override
