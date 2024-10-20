@@ -32,6 +32,9 @@
              <a href="plan/create">
                 <button>Create Plan</button>
             </a>
+             <a href="plan/list">
+                <button>List Plan</button>
+            </a>
         </div>
     </body>
 </html>

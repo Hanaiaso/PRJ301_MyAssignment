@@ -17,6 +17,7 @@
                 <th>Ngày bắt đầu</th>
                 <th>Ngày kết thúc</th>
                 <th>Phòng ban</th>
+                <th>Thao tác</th> <!-- New column for actions -->
             </tr>
         </thead>
         <tbody>
@@ -29,12 +30,15 @@
                             <td>${plan.start}</td>
                             <td>${plan.end}</td>
                             <td>${plan.dept.id}</td>
+                            <td>
+                                <a href="update?id=${plan.id}">Chỉnh sửa</a> <!-- Link to the update controller -->
+                            </td>
                         </tr>
                     </c:forEach>
                 </c:when>
                 <c:otherwise>
                     <tr>
-                        <td colspan="5">Không có kế hoạch nào.</td>
+                        <td colspan="6">Không có kế hoạch nào.</td> <!-- Adjusted colspan to include new column -->
                     </tr>
                 </c:otherwise>
             </c:choose>
