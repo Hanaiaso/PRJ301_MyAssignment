@@ -3,102 +3,106 @@ package Plan.Controller;
 import Employee.Entity.Department;
 import Plan.Entity.Plan;
 import Plan.Entity.PlanCampain;
+import Plan.Entity.Product;
 import dal.DepartmentDBContext;
+import dal.PlanCampainDBContext;
 import dal.PlanDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.RequestDispatcher;
-
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PlanUpdateController extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    DepartmentDBContext departmentDB = new DepartmentDBContext();
+    PlanCampainDBContext pcdb = new PlanCampainDBContext();
 
-        // Lấy ID kế hoạch từ tham số truy vấn
-        int planId = Integer.parseInt(request.getParameter("id"));
+    ArrayList<Department> departments = departmentDB.list();
+    request.setAttribute("departments", departments);
+    
+    String plid = request.getParameter("id");
+  
+    if (plid != null) {
         PlanDBContext planDB = new PlanDBContext();
-        Plan plan = planDB.get(planId);
+        Plan plan = planDB.get(Integer.parseInt(plid)); 
+        
+        
+        if (plan != null) {
+            request.setAttribute("plan", plan); 
+         
+            List<PlanCampain> campains = pcdb.getCampainsByPlanId(plan.getId());
+            request.setAttribute("campains", campains); 
 
-        // Lấy danh sách các chiến dịch liên quan đến kế hoạch
-        ArrayList<PlanCampain> campains = planDB.getCampaignsByPlanId(planId);
-
-        // Lấy danh sách các phòng ban
-        DepartmentDBContext dbDept = new DepartmentDBContext();
-        ArrayList<Department> depts = dbDept.list();
-
-        // Thiết lập thuộc tính cho JSP
-        request.setAttribute("depts", depts);
-        request.setAttribute("plan", plan);
-        request.setAttribute("campains", campains); // Thêm danh sách chiến dịch vào request
-
-        // Chuyển hướng đến trang cập nhật kế hoạch
-        RequestDispatcher dispatcher = request.getRequestDispatcher("../view/plan/update.jsp");
-        dispatcher.forward(request, response);
+         
+            request.getRequestDispatcher("../view/plan/update.jsp").forward(request, response);
+        } else {
+           
+            response.sendRedirect("list");
+        }
+    } else {
+        
+        response.sendRedirect("list");
     }
+}
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            // Lấy dữ liệu từ request
-            int planId = Integer.parseInt(request.getParameter("plid"));
-            String name = request.getParameter("plname");
-            Date startDate = Date.valueOf(request.getParameter("StartDate"));
-            Date endDate = Date.valueOf(request.getParameter("EndDate"));
-            int deptId = Integer.parseInt(request.getParameter("did"));
+        
+        int plid = Integer.parseInt(request.getParameter("plid"));
+        String plname = request.getParameter("plname");
+        Date startDate = Date.valueOf(request.getParameter("startDate"));
+        Date endDate = Date.valueOf(request.getParameter("endDate"));
+        int did = Integer.parseInt(request.getParameter("did"));
 
-            // Tạo đối tượng Plan từ dữ liệu
-            Plan plan = new Plan();
-            plan.setId(planId);
-            plan.setName(name);
-            plan.setStart(startDate);
-            plan.setEnd(endDate);
+       
+        Plan plan = new Plan();
+        plan.setId(plid);
+        plan.setName(plname);
+        plan.setStart(startDate);
+        plan.setEnd(endDate);
 
-            // Tạo đối tượng Department
-            Department dept = new Department();
-            dept.setId(deptId);
-            plan.setDept(dept);
+      
+        Department dept = new Department();
+        dept.setId(did);
+        plan.setDept(dept);
 
-            // Cập nhật các chiến dịch liên quan
-            ArrayList<PlanCampain> campains = new ArrayList<>();
-            String[] campaignIds = request.getParameterValues("campaignIds");
+        
+        ArrayList<PlanCampain> campaigns = new ArrayList<>();
 
-            if (campaignIds != null) {
-                for (String id : campaignIds) {
-                   
-                    PlanCampain campaign = new PlanCampain();
-                    campaign.setId(Integer.parseInt(id));
-                   
-                    campains.add(campaign);
-                }
+        
+        String[] plcids = request.getParameterValues("plcid");
+        if (plcids != null) {
+            for (String plcid : plcids) {
+                PlanCampain campaign = new PlanCampain();
+                campaign.setId(Integer.parseInt(plcid));
+                Product product = new Product();
+                String productName = request.getParameter("product" + plcid);
+                product.setName(productName);
+                campaign.setProduct(product);
+                campaign.setQuantity(Integer.parseInt(request.getParameter("quantity" + plcid)));
+                campaign.setCost(Float.parseFloat(request.getParameter("estimate" + plcid)));
+
+                campaigns.add(campaign);
             }
-
-            plan.setCampains(campains); // Thiết lập danh sách chiến dịch cho kế hoạch
-
-            // Cập nhật kế hoạch vào cơ sở dữ liệu
-            PlanDBContext planDB = new PlanDBContext();
-            planDB.update(plan); // Gọi hàm update và kiểm tra kết quả
-
-            // Chuyển hướng về trang danh sách sau khi cập nhật thành công
-            response.sendRedirect("list");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("errorMessage", "An error occurred: " + e.getMessage());
-            RequestDispatcher dispatcher = request.getRequestDispatcher("../view/plan/update.jsp");
-            dispatcher.forward(request, response);
         }
+
+        
+        plan.setCampains(campaigns);
+
+        
+        PlanDBContext planDB = new PlanDBContext();
+        planDB.update(plan);
+
+        response.sendRedirect("list"); 
     }
 
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }
 }

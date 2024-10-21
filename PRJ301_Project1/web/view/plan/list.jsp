@@ -17,6 +17,9 @@
                 <th>Ngày bắt đầu</th>
                 <th>Ngày kết thúc</th>
                 <th>Phòng ban</th>
+                <th>Sản phẩm</th> <!-- Column for Products -->
+                <th>Số lượng</th> <!-- Column for Quantity -->
+                <th>Ước tính</th> <!-- Column for Estimate -->
                 <th>Thao tác</th> <!-- New column for actions -->
             </tr>
         </thead>
@@ -24,21 +27,41 @@
             <c:choose>
                 <c:when test="${not empty plans}">
                     <c:forEach var="plan" items="${plans}">
-                        <tr>
-                            <td>${plan.id}</td>
-                            <td>${plan.name}</td>
-                            <td>${plan.start}</td>
-                            <td>${plan.end}</td>
-                            <td>${plan.dept.id}</td>
-                            <td>
-                                <a href="update?id=${plan.id}">Chỉnh sửa</a> <!-- Link to the update controller -->
-                            </td>
-                        </tr>
+                        <c:if test="${not empty plan.campains}"> <!-- Check if the plan has campaigns -->
+                            <c:forEach var="campaign" items="${plan.campains}"> <!-- Loop through campaigns -->
+                                <tr>
+                                    <td>${plan.id}</td>
+                                    <td>${plan.name}</td>
+                                    <td>${plan.start}</td>
+                                    <td>${plan.end}</td>
+                                    <td>${plan.dept.name}</td> <!-- Use department name -->
+                                    <td>${campaign.product.name}</td> <!-- Display product name -->
+                                    <td>${campaign.quantity}</td> <!-- Display quantity -->
+                                    <td>${campaign.cost}</td> <!-- Display estimate cost -->
+                                    <td>
+                                        <a href="update?id=${plan.id}">Chỉnh sửa</a> <!-- Link to the update controller -->
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </c:if>
+                        <c:if test="${empty plan.campains}"> <!-- If no campaigns, display plan info -->
+                            <tr>
+                                <td>${plan.id}</td>
+                                <td>${plan.name}</td>
+                                <td>${plan.start}</td>
+                                <td>${plan.end}</td>
+                                <td>${plan.dept.name}</td> <!-- Use department name -->
+                                <td colspan="5">Không có sản phẩm nào.</td> <!-- Indicate no campaigns -->
+                                <td>
+                                    <a href="update?id=${plan.id}">Chỉnh sửa</a> <!-- Link to the update controller -->
+                                </td>
+                            </tr>
+                        </c:if>
                     </c:forEach>
                 </c:when>
                 <c:otherwise>
                     <tr>
-                        <td colspan="6">Không có kế hoạch nào.</td> <!-- Adjusted colspan to include new column -->
+                        <td colspan="9">Không có kế hoạch nào.</td> <!-- Adjusted colspan to include new columns -->
                     </tr>
                 </c:otherwise>
             </c:choose>

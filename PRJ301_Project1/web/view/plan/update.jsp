@@ -1,51 +1,51 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Update Plan</title>
+        <title>Cập nhật kế hoạch</title>
     </head>
     <body>
-        <h2>Update Plan</h2>
+        <h1>Cập nhật kế hoạch</h1>
         <form action="update" method="post">
             <input type="hidden" name="plid" value="${plan.id}" />
-            <label for="plname">Plan Name:</label>
-            <input type="text" id="plname" name="plname" value="${plan.name}" required /><br/>
 
-            <label for="StartDate">Start Date:</label>
-            <input type="date" id="StartDate" name="StartDate" value="${plan.start}" required /><br/>
+            <label for="plname">Tên kế hoạch:</label>
+            <input type="text" id="plname" name="plname" value="${plan.name}" required /><br>
 
-            <label for="EndDate">End Date:</label>
-            <input type="date" id="EndDate" name="EndDate" value="${plan.end}" required /><br/>
+            <label for="startDate">Ngày bắt đầu:</label>
+            <input type="date" id="startDate" name="startDate" value="${fn:substring(plan.start, 0, 10)}" required /><br>
 
-            <label for="did">Department:</label>
-            <select name="did" id="did" required>
-                <c:forEach items="${requestScope.depts}" var="d">
-                    <option value="${d.id}" 
-                            ${plan.dept.id == d.id ? "selected" : ""}>${d.name}</option>
+            <label for="endDate">Ngày kết thúc:</label>
+            <input type="date" id="endDate" name="endDate" value="${fn:substring(plan.end, 0, 10)}" required /><br>
+
+            <label for="department">Phòng ban:</label>
+            <select name="did" id="department" required>
+                <c:forEach var="dept" items="${departments}">
+                    <option value="${dept.id}" ${dept.id == plan.dept.id ? 'selected' : ''}>${dept.name}</option>
                 </c:forEach>
-            </select> <br/>
+            </select><br>
 
-            <h3>Select Campaigns:</h3>
-            <c:forEach var="campaign" items="${campains}">
-                <input type="checkbox" name="campaignIds" value="${campaign.id}" 
-                       <c:if test="${fn:contains(plan.campains, campaign.id)}">checked</c:if> />
-                <label>Campaign ID: ${campaign.id}</label><br/>
+            <h3>Chi tiết chiến dịch</h3>
+            <c:forEach var="campaign" items="${requestScope.campains}">
+                <div class="campaign">
+                    <input type="hidden" name="plcid" value="${campaign.id}" />
 
-                <label for="quantity_${campaign.id}">Quantity:</label>
-                <input type="number" id="quantity_${campaign.id}" name="quantity_${campaign.id}" 
-                       value="${fn:contains(plan.campains, campaign.id) ? campaign.quantity : 0}" 
-                       min="0" required /><br/>
+                    <label for="product${campaign.id}">Sản phẩm:</label>
+                    <input type="text" id="product${campaign.id}" name="product${campaign.id}" value="${campaign.product.name}" required /><br>
 
-                <label for="cost_${campaign.id}">Cost:</label>
-                <input type="number" id="cost_${campaign.id}" name="cost_${campaign.id}" 
-                       value="${fn:contains(plan.campains, campaign.id) ? campaign.cost : 0}" 
-                       min="0" step="0.01" required /><br/><br/>
+                    <label for="quantity${campaign.id}">Số lượng:</label>
+                    <input type="number" id="quantity${campaign.id}" name="quantity${campaign.id}" value="${campaign.quantity}" required /><br>
+
+                    <label for="estimate${campaign.id}">Ước tính:</label>
+                    <input type="text" id="estimate${campaign.id}" name="estimate${campaign.id}" value="${campaign.cost}" required /><br><br>
+                </div>
             </c:forEach>
 
-            <input type="submit" value="Update" />
+            <input type="submit" value="Cập nhật" />
         </form>
+
     </body>
 </html>

@@ -3,6 +3,7 @@ package dal;
 import Employee.Entity.Department;
 import Plan.Entity.Plan;
 import Plan.Entity.PlanCampain;
+import Plan.Entity.Product;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,8 +22,7 @@ public class PlanDBContext extends DBContext<Plan> {
         try {
             connection.setAutoCommit(false);
 
-            try (PreparedStatement stmInsertPlan = connection.prepareStatement(sqlInsertPlan);
-                 PreparedStatement stmSelectPlan = connection.prepareStatement(sqlSelectPlan)) {
+            try (PreparedStatement stmInsertPlan = connection.prepareStatement(sqlInsertPlan); PreparedStatement stmSelectPlan = connection.prepareStatement(sqlSelectPlan)) {
 
                 // Set values for the Plan insert query
                 stmInsertPlan.setString(1, entity.getName());
@@ -75,68 +75,35 @@ public class PlanDBContext extends DBContext<Plan> {
 
     @Override
     public void update(Plan entity) {
-        String sqlUpdatePlan = "UPDATE [Plan] SET [plname] = ?, [StartDate] = ?, [EndDate] = ?, [did] = ? WHERE [plid] = ?";
-        String sqlUpdateCampain = "UPDATE [PlanCampain] SET [Quantity] = ?, [Estimate] = ? WHERE [plid] = ? AND [pid] = ?";
-        String sqlInsertCampain = "INSERT INTO [PlanCampain] ([plid], [pid], [Quantity], [Estimate]) VALUES (?, ?, ?, ?)";
+        String sqlPlan = "UPDATE [Plan] SET [plname] = ?, [StartDate] = ?, [EndDate] = ?, [did] = ? WHERE [plid] = ?";
+        String sqlCampaign = "UPDATE [PlanCampain] SET [pid] = ?, [Quantity] = ?, [Estimate] = ? WHERE [plcid] = ?";
+       // String sqlDeleteCampaign = "DELETE FROM [PlanCampain] WHERE [plcid] = ?"; // SQL for deletion of campaigns
 
-        try {
-            connection.setAutoCommit(false);
+        try (PreparedStatement planStm = connection.prepareStatement(sqlPlan); PreparedStatement campaignStm = connection.prepareStatement(sqlCampaign); 
+                /*PreparedStatement deleteCampaignStm = connection.prepareStatement(sqlDeleteCampaign)*/) {
 
-            try (PreparedStatement stmUpdatePlan = connection.prepareStatement(sqlUpdatePlan)) {
-                // Set values for the update Plan query
-                stmUpdatePlan.setString(1, entity.getName());
-                stmUpdatePlan.setDate(2, entity.getStart());
-                stmUpdatePlan.setDate(3, entity.getEnd());
-                stmUpdatePlan.setInt(4, entity.getDept().getId());
-                stmUpdatePlan.setInt(5, entity.getId());
+            // Update the Plan
+            planStm.setString(1, entity.getName());
+            planStm.setDate(2, new java.sql.Date(entity.getStart().getTime()));
+            planStm.setDate(3, new java.sql.Date(entity.getEnd().getTime()));
+            planStm.setInt(4, entity.getDept().getId());
+            planStm.setInt(5, entity.getId());
+            planStm.executeUpdate();
 
-                // Execute the update
-                stmUpdatePlan.executeUpdate();
-            }
-
-            // Update or insert campaigns
-            for (PlanCampain campain : entity.getCampains()) {
-                try (PreparedStatement stmUpdateCampain = connection.prepareStatement(sqlUpdateCampain)) {
-                    // Set values for the update PlanCampain query
-                    stmUpdateCampain.setInt(1, campain.getQuantity());
-                    stmUpdateCampain.setFloat(2, campain.getCost());
-                    stmUpdateCampain.setInt(3, entity.getId());
-                    stmUpdateCampain.setInt(4, campain.getProduct().getId());
-
-                    // Execute the update
-                    int updatedRows = stmUpdateCampain.executeUpdate();
-
-                    // If no rows were updated, insert the new campaign
-                    if (updatedRows == 0) {
-                        try (PreparedStatement stmInsertCampain = connection.prepareStatement(sqlInsertCampain)) {
-                            // Set values for the insert PlanCampain query
-                            stmInsertCampain.setInt(1, entity.getId());
-                            stmInsertCampain.setInt(2, campain.getProduct().getId());
-                            stmInsertCampain.setInt(3, campain.getQuantity());
-                            stmInsertCampain.setFloat(4, campain.getCost());
-
-                            // Execute the insert query for PlanCampain
-                            stmInsertCampain.executeUpdate();
-                        }
-                    }
+            // Update associated PlanCampains
+            for (PlanCampain campaign : entity.getCampains()) {
+                if (campaign.getId() > 0) { 
+                    campaignStm.setInt(1, campaign.getProduct().getId());
+                    campaignStm.setInt(2, campaign.getQuantity());
+                    campaignStm.setFloat(3, campaign.getCost());
+                    campaignStm.setInt(4, campaign.getId());
+                    campaignStm.executeUpdate();
                 }
             }
 
-            // Commit the transaction
-            connection.commit();
+          
         } catch (SQLException ex) {
             Logger.getLogger(PlanDBContext.class.getName()).log(Level.SEVERE, null, ex);
-            try {
-                connection.rollback();
-            } catch (SQLException ex1) {
-                Logger.getLogger(PlanDBContext.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException ex) {
-                Logger.getLogger(PlanDBContext.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
 
@@ -148,30 +115,55 @@ public class PlanDBContext extends DBContext<Plan> {
     @Override
     public ArrayList<Plan> list() {
         ArrayList<Plan> plans = new ArrayList<>();
-        String sql = "SELECT p.[plid], p.[plname], p.[StartDate], p.[EndDate], d.[did], d.[dname], d.[type] "
+        String sql = "SELECT p.[plid], [plname], [StartDate], [EndDate], p.[did], d.dname, pr.pname, "
+                + "pc.plcid, pc.pid, pc.Quantity, pc.Estimate "
                 + "FROM [Plan] p "
-                + "INNER JOIN [Department] d ON p.[did] = d.[did]";
+                + "INNER JOIN [Department] d ON p.[did] = d.[did] "
+                + "LEFT JOIN PlanCampain pc ON p.plid = pc.plid "
+                + "LEFT JOIN [Product] pr ON pr.pid = pc.pid"; // Change INNER JOIN to LEFT JOIN
 
-        try (PreparedStatement stm = connection.prepareStatement(sql);
-             ResultSet rs = stm.executeQuery()) {
-
-            // Process the result set
+        try (PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
+            Plan currentPlan = null; // To hold the current plan
             while (rs.next()) {
-                Plan plan = new Plan();
-                plan.setId(rs.getInt("plid"));
-                plan.setName(rs.getString("plname"));
-                plan.setStart(rs.getDate("StartDate"));
-                plan.setEnd(rs.getDate("EndDate"));
+                int planId = rs.getInt("plid");
 
-                // Create Department object and set info
-                Department d = new Department();
-                d.setId(rs.getInt("did"));
-                d.setName(rs.getString("dname"));
-                d.setType(rs.getString("type"));
+                // Check if we are still in the same plan
+                if (currentPlan == null || currentPlan.getId() != planId) {
+                    // If we are on a new plan, create a new Plan object
+                    currentPlan = new Plan();
+                    currentPlan.setId(planId);
+                    currentPlan.setName(rs.getString("plname"));
+                    currentPlan.setStart(rs.getDate("StartDate"));
+                    currentPlan.setEnd(rs.getDate("EndDate"));
 
-                // Set Department for Plan
-                plan.setDept(d);
-                plans.add(plan);
+                    // Create Department object and set info
+                    Department d = new Department();
+                    d.setId(rs.getInt("did"));
+                    d.setName(rs.getString("dname"));
+
+                    // Set Department for Plan
+                    currentPlan.setDept(d);
+
+                    // Create a list for campaigns
+                    currentPlan.setCampains(new ArrayList<>());
+                    plans.add(currentPlan); // Add the new plan to the list
+                }
+
+                // Now process campaigns, if available
+                if (rs.getInt("plcid") > 0) {
+                    PlanCampain pc = new PlanCampain();
+                    Product p = new Product();
+                    p.setId(rs.getInt("pid"));
+                    p.setName(rs.getString("pname"));
+                    pc.setProduct(p);
+
+                    pc.setId(rs.getInt("plcid"));
+                    pc.setQuantity(rs.getInt("Quantity"));
+                    pc.setCost(rs.getFloat("Estimate"));
+
+                    // Add the campaign to the current plan's campaign list
+                    currentPlan.getCampains().add(pc);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(PlanDBContext.class.getName()).log(Level.SEVERE, null, ex);
@@ -216,39 +208,5 @@ public class PlanDBContext extends DBContext<Plan> {
 
         return plan; // Return found Plan or null
     }
-    
-  public ArrayList<PlanCampain> getCampaignsByPlanId(int planId) {
-    ArrayList<PlanCampain> campaigns = new ArrayList<>();
-    
-    // SQL query to retrieve campaigns for the specified plan ID
-    String sql = "SELECT * FROM PlanCampain WHERE plid = ?"; // Giả sử plid là khóa ngoại liên kết với bảng Plan
-
-    // Use try-with-resources for better resource management
-    try (PreparedStatement statement = connection.prepareStatement(sql)) {
-        statement.setInt(1, planId); // Set the plan ID in the query
-        try (ResultSet resultSet = statement.executeQuery()) {
-            // Iterate through the result set
-            while (resultSet.next()) {
-                PlanCampain campaign = new PlanCampain();
-                campaign.setId(resultSet.getInt("plcid")); // Set campaign ID   
-                campaign.setQuantity(resultSet.getInt("Quantity")); // Set quantity
-                campaign.setCost(resultSet.getFloat("Estimate")); // Set estimated cost
-
-                // Sử dụng productId từ cơ sở dữ liệu (giả sử bạn có cột productId trong bảng PlanCampain)
-               // campaign.setProduct(getProduct("pid")); // Lấy pid từ cơ sở dữ liệu
-
-                campaigns.add(campaign); // Add campaign to the list
-            }
-        }
-    } catch (SQLException e) {
-        // Log the exception (you can replace with your logger)
-        Logger.getLogger(PlanDBContext.class.getName()).log(Level.SEVERE, "Error retrieving campaigns", e);
-    }
-    
-    return campaigns; // Return the list of campaigns
-}
 
 }
-
-
-
