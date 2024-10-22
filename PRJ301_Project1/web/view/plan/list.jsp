@@ -5,6 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Danh sách kế hoạch</title>
+    <script>
+        function removeEmployee(id) {
+            var result = confirm("Are you sure?");
+            if (result) {
+                document.getElementById("frmRemoveEmployee" + id).submit();
+            }
+        }
+    </script>
 </head>
 <body>
     <h1>Danh sách các kế hoạch</h1>
@@ -17,10 +25,10 @@
                 <th>Ngày bắt đầu</th>
                 <th>Ngày kết thúc</th>
                 <th>Phòng ban</th>
-                <th>Sản phẩm</th> <!-- Column for Products -->
-                <th>Số lượng</th> <!-- Column for Quantity -->
-                <th>Ước tính</th> <!-- Column for Estimate -->
-                <th>Thao tác</th> <!-- New column for actions -->
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Ước tính</th>
+                <th>Thao tác</th>
             </tr>
         </thead>
         <tbody>
@@ -34,12 +42,16 @@
                                     <td>${plan.name}</td>
                                     <td>${plan.start}</td>
                                     <td>${plan.end}</td>
-                                    <td>${plan.dept.name}</td> <!-- Use department name -->
-                                    <td>${campaign.product.name}</td> <!-- Display product name -->
-                                    <td>${campaign.quantity}</td> <!-- Display quantity -->
-                                    <td>${campaign.cost}</td> <!-- Display estimate cost -->
+                                    <td>${plan.dept.name}</td>
+                                    <td>${campaign.product.name}</td>
+                                    <td>${campaign.quantity}</td>
+                                    <td>${campaign.cost}</td>
                                     <td>
-                                        <a href="update?id=${plan.id}">Chỉnh sửa</a> <!-- Link to the update controller -->
+                                        <a href="update?id=${plan.id}">Chỉnh sửa</a> |
+                                        <a href="#" onclick="removeEmployee(${plan.id})">Xóa</a>
+                                        <form id="frmRemoveEmployee${plan.id}" action="delete" method="POST" style="display:none;">
+                                            <input type="hidden" name="id" value="${plan.id}"/>
+                                        </form>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -50,10 +62,10 @@
                                 <td>${plan.name}</td>
                                 <td>${plan.start}</td>
                                 <td>${plan.end}</td>
-                                <td>${plan.dept.name}</td> <!-- Use department name -->
-                                <td colspan="5">Không có sản phẩm nào.</td> <!-- Indicate no campaigns -->
+                                <td>${plan.dept.name}</td>
+                                <td colspan="5">Không có sản phẩm nào.</td>
                                 <td>
-                                    <a href="update?id=${plan.id}">Chỉnh sửa</a> <!-- Link to the update controller -->
+                                    <a href="update?id=${plan.id}">Chỉnh sửa</a>
                                 </td>
                             </tr>
                         </c:if>
@@ -61,7 +73,7 @@
                 </c:when>
                 <c:otherwise>
                     <tr>
-                        <td colspan="9">Không có kế hoạch nào.</td> <!-- Adjusted colspan to include new columns -->
+                        <td colspan="9">Không có kế hoạch nào.</td>
                     </tr>
                 </c:otherwise>
             </c:choose>

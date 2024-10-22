@@ -25,7 +25,7 @@
     <body>
         <a href="create">
                 <button>Add Employee</button>
-        </a>
+        </a><br>
         <form action="filter" method="GET">
             Id: <input type="text" name="id" value="${param.id}"/> <br/>
             Name: <input type="text" name="name" value="${param.name}"/> <br/>

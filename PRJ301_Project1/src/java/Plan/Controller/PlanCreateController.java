@@ -115,7 +115,7 @@ public class PlanCreateController extends HttpServlet {
             //insert
             PlanDBContext db = new PlanDBContext();
             db.insert(plan);
-            response.getWriter().println("your plan has been added!");
+            response.sendRedirect("list");
         }
         else
         {

@@ -82,14 +82,14 @@ public class PlanDBContext extends DBContext<Plan> {
             connection.setAutoCommit(false);
 
             // 1. Update the plan
-            String sqlUpdatePlan = "UPDATE [Plan] SET [plname] = ?, [StartDate] = ?, [EndDate] = ?, [did] = ? WHERE [plid] = ?";
+            String sqlUpdatePlan = "UPDATE [Plan] SET [plname] = ?, [StartDate] = ?, [EndDate] = ?, [did] = ? WHERE [plid] = ? AND [isDone = 0]";
             stmtUpdatePlan = connection.prepareStatement(sqlUpdatePlan);
             stmtUpdatePlan.setString(1, plan.getName());
             stmtUpdatePlan.setDate(2, plan.getStart());
             stmtUpdatePlan.setDate(3, plan.getEnd());
             stmtUpdatePlan.setInt(4, plan.getDept().getId());
             stmtUpdatePlan.setInt(5, plan.getId());
-            stmtUpdatePlan.executeUpdate();
+            stmtUpdatePlan = connection.prepareStatement(sqlUpdatePlan);
 
             // 2. Update campains
             String sqlUpdateCampain = "UPDATE [PlanCampain] SET [Quantity] = ?, [Estimate] = ? WHERE [plcid] = ?";
@@ -125,31 +125,22 @@ public class PlanDBContext extends DBContext<Plan> {
         }
     }
 
-//    private ArrayList<PlanCampain> getExistingCampains(int planId) throws SQLException {
-//        ArrayList<PlanCampain> existingCampains = new ArrayList<>();
-//        String sql = "SELECT [pid], [quantity], [cost] FROM [PlanCampain] WHERE [planid] = ?";
-//        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-//            stmt.setInt(1, planId);
-//            try (ResultSet rs = stmt.executeQuery()) {
-//                while (rs.next()) {
-//                    PlanCampain campain = new PlanCampain();
-//                    Product product = new Product();
-//                    product.setId(rs.getInt("pid"));
-//                    campain.setProduct(product);
-//                    campain.setQuantity(rs.getInt("quantity"));
-//                    campain.setCost(rs.getFloat("cost"));
-//                    existingCampains.add(campain);
-//                }
-//            }
-//        }
-//        return existingCampains;
-//    }
 
     @Override
     public void delete(Plan entity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Not implemented
-    }
+        try {
+            PreparedStatement stmtUpdatePlan = null;
+            String sqlUpdatePlan = "UPDATE [Plan] SET [isDone] = 1 WHERE [plid] = ?";
+            stmtUpdatePlan = connection.prepareStatement(sqlUpdatePlan);
+            stmtUpdatePlan.setInt(1, entity.getId());            
+            stmtUpdatePlan.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(PlanDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        } 
 
+    }
+    
     @Override
     public ArrayList<Plan> list() {
         ArrayList<Plan> plans = new ArrayList<>();
@@ -158,7 +149,7 @@ public class PlanDBContext extends DBContext<Plan> {
                 + "FROM [Plan] p "
                 + "INNER JOIN [Department] d ON p.[did] = d.[did] "
                 + "LEFT JOIN PlanCampain pc ON p.plid = pc.plid "
-                + "LEFT JOIN [Product] pr ON pr.pid = pc.pid"; // Change INNER JOIN to LEFT JOIN
+                + "LEFT JOIN [Product] pr ON pr.pid = pc.pid WHERE [isDone] = 0"; // Change INNER JOIN to LEFT JOIN
 
         try (PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
             Plan currentPlan = null; // To hold the current plan
@@ -216,7 +207,7 @@ public class PlanDBContext extends DBContext<Plan> {
         String sql = "SELECT p.[plid], p.[plname], p.[StartDate], p.[EndDate], d.[did], d.[dname], d.[type] "
                 + "FROM [Plan] p "
                 + "INNER JOIN [Department] d ON p.[did] = d.[did] "
-                + "WHERE p.[plid] = ?";
+                + "WHERE p.[plid] = ? AND isDone = 0";
 
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setInt(1, id); // Set the plid
