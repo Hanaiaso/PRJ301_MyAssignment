@@ -89,6 +89,8 @@ public class Plan {
     public void setCampains(ArrayList<PlanCampain> campains) {
         this.campains = campains;
     }
+
+    
     
     
 }

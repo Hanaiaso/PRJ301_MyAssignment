@@ -74,38 +74,76 @@ public class PlanDBContext extends DBContext<Plan> {
     }
 
     @Override
-    public void update(Plan entity) {
-        String sqlPlan = "UPDATE [Plan] SET [plname] = ?, [StartDate] = ?, [EndDate] = ?, [did] = ? WHERE [plid] = ?";
-        String sqlCampaign = "UPDATE [PlanCampain] SET [pid] = ?, [Quantity] = ?, [Estimate] = ? WHERE [plcid] = ?";
-       // String sqlDeleteCampaign = "DELETE FROM [PlanCampain] WHERE [plcid] = ?"; // SQL for deletion of campaigns
+    public void update(Plan plan) {
+        PreparedStatement stmtUpdatePlan = null;
+        PreparedStatement stmtUpdateCampain = null;
 
-        try (PreparedStatement planStm = connection.prepareStatement(sqlPlan); PreparedStatement campaignStm = connection.prepareStatement(sqlCampaign); 
-                /*PreparedStatement deleteCampaignStm = connection.prepareStatement(sqlDeleteCampaign)*/) {
+        try {
+            connection.setAutoCommit(false);
 
-            // Update the Plan
-            planStm.setString(1, entity.getName());
-            planStm.setDate(2, new java.sql.Date(entity.getStart().getTime()));
-            planStm.setDate(3, new java.sql.Date(entity.getEnd().getTime()));
-            planStm.setInt(4, entity.getDept().getId());
-            planStm.setInt(5, entity.getId());
-            planStm.executeUpdate();
+            // 1. Update the plan
+            String sqlUpdatePlan = "UPDATE [Plan] SET [plname] = ?, [StartDate] = ?, [EndDate] = ?, [did] = ? WHERE [plid] = ?";
+            stmtUpdatePlan = connection.prepareStatement(sqlUpdatePlan);
+            stmtUpdatePlan.setString(1, plan.getName());
+            stmtUpdatePlan.setDate(2, plan.getStart());
+            stmtUpdatePlan.setDate(3, plan.getEnd());
+            stmtUpdatePlan.setInt(4, plan.getDept().getId());
+            stmtUpdatePlan.setInt(5, plan.getId());
+            stmtUpdatePlan.executeUpdate();
 
-            // Update associated PlanCampains
-            for (PlanCampain campaign : entity.getCampains()) {
-                if (campaign.getId() > 0) { 
-                    campaignStm.setInt(1, campaign.getProduct().getId());
-                    campaignStm.setInt(2, campaign.getQuantity());
-                    campaignStm.setFloat(3, campaign.getCost());
-                    campaignStm.setInt(4, campaign.getId());
-                    campaignStm.executeUpdate();
-                }
+            // 2. Update campains
+            String sqlUpdateCampain = "UPDATE [PlanCampain] SET [Quantity] = ?, [Estimate] = ? WHERE [plcid] = ?";
+            stmtUpdateCampain = connection.prepareStatement(sqlUpdateCampain);
+
+            for (PlanCampain campain : plan.getCampains()) {
+                stmtUpdateCampain.setInt(1, campain.getQuantity());
+                stmtUpdateCampain.setFloat(2, campain.getCost());
+                stmtUpdateCampain.setInt(3, campain.getId());
+                stmtUpdateCampain.executeUpdate();
             }
 
-          
+            connection.commit();
         } catch (SQLException ex) {
+            try {
+                connection.rollback();
+            } catch (SQLException rollbackEx) {
+                Logger.getLogger(PlanDBContext.class.getName()).log(Level.SEVERE, null, rollbackEx);
+            }
             Logger.getLogger(PlanDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (stmtUpdatePlan != null) {
+                    stmtUpdatePlan.close();
+                }
+                if (stmtUpdateCampain != null) {
+                    stmtUpdateCampain.close();
+                }
+                connection.setAutoCommit(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(PlanDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
+
+//    private ArrayList<PlanCampain> getExistingCampains(int planId) throws SQLException {
+//        ArrayList<PlanCampain> existingCampains = new ArrayList<>();
+//        String sql = "SELECT [pid], [quantity], [cost] FROM [PlanCampain] WHERE [planid] = ?";
+//        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+//            stmt.setInt(1, planId);
+//            try (ResultSet rs = stmt.executeQuery()) {
+//                while (rs.next()) {
+//                    PlanCampain campain = new PlanCampain();
+//                    Product product = new Product();
+//                    product.setId(rs.getInt("pid"));
+//                    campain.setProduct(product);
+//                    campain.setQuantity(rs.getInt("quantity"));
+//                    campain.setCost(rs.getFloat("cost"));
+//                    existingCampains.add(campain);
+//                }
+//            }
+//        }
+//        return existingCampains;
+//    }
 
     @Override
     public void delete(Plan entity) {

@@ -34,7 +34,7 @@
                     <input type="hidden" name="plcid" value="${campaign.id}" />
 
                     <label for="product${campaign.id}">Sản phẩm:</label>
-                    <input type="text" id="product${campaign.id}" name="product${campaign.id}" value="${campaign.product.name}" required /><br>
+                    <input type="text" id="product${campaign.id}" name="product${campaign.id}" value="${campaign.product.name}" readonly="" /><br>
 
                     <label for="quantity${campaign.id}">Số lượng:</label>
                     <input type="number" id="quantity${campaign.id}" name="quantity${campaign.id}" value="${campaign.quantity}" required /><br>
