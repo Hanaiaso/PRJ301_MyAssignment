@@ -16,6 +16,7 @@
 </head>
 <body>
     <h1>Danh sách các kế hoạch</h1>
+    
 
     <table border="1" cellpadding="5" cellspacing="0">
         <thead>
@@ -51,8 +52,13 @@
                                         <a href="#" onclick="removeEmployee(${plan.id})">Xóa</a>
                                         <form id="frmRemoveEmployee${plan.id}" action="delete" method="POST" style="display:none;">
                                             <input type="hidden" name="id" value="${plan.id}"/>
-                                        </form>
+                                        </form> | 
+                                        <a href="../schedulecampain/list?plcid=${campaign.id}&plid=${plan.id}">Chi tiết</a>
                                     </td>
+                                    <td>
+                                <!-- Thêm nút để đi đến chi tiết chiến dịch -->
+                                <a href="../schedulecampain/create?plid=${plan.id}&plcid=${campaign.id}">Thêm Kế Hoạch Chi tiết</a>
+                            </td>
                                 </tr>
                             </c:forEach>
                         </c:if>
@@ -79,5 +85,6 @@
             </c:choose>
         </tbody>
     </table>
+    <a href="../schedulecampain/list" class="view-schedule-button">Danh sách chi tiết các kế hoạch</a>
 </body>
 </html>

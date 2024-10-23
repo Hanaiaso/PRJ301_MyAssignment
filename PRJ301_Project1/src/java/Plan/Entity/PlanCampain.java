@@ -4,6 +4,9 @@
  */
 package Plan.Entity;
 
+import Schedule.Entity.ScheduleCampain;
+import java.util.ArrayList;
+
 /**
  *
  * @author LEGION
@@ -14,7 +17,17 @@ public class PlanCampain {
     private Product product;
     private int quantity;
     private float cost;
+    private ArrayList<ScheduleCampain> schedulecampain = new ArrayList<>();
 
+    public ArrayList<ScheduleCampain> getSchedulecampain() {
+        return schedulecampain;
+    }
+
+    public void setSchedulecampain(ArrayList<ScheduleCampain> schedulecampain) {
+        this.schedulecampain = schedulecampain;
+    }
+
+    
     public int getId() {
         return id;
     }

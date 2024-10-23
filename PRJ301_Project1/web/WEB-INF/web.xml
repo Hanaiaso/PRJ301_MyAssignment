@@ -52,6 +52,18 @@
         <servlet-name>PlanDeleteController</servlet-name>
         <servlet-class>Plan.Controller.PlanDeleteController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ScheduleCampainCreateController</servlet-name>
+        <servlet-class>Schedule.Controller.ScheduleCampainCreateController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ScheduleEmployeeCreateController</servlet-name>
+        <servlet-class>Schedule.Controller.ScheduleEmployeeCreateController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ScheduleCampainListController</servlet-name>
+        <servlet-class>Schedule.Controller.ScheduleCampainListController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -103,5 +115,17 @@
     <servlet-mapping>
         <servlet-name>PlanDeleteController</servlet-name>
         <url-pattern>/plan/delete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ScheduleCampainCreateController</servlet-name>
+        <url-pattern>/schedulecampain/create</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ScheduleEmployeeCreateController</servlet-name>
+        <url-pattern>/scheduleemployee/create</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ScheduleCampainListController</servlet-name>
+        <url-pattern>/schedulecampain/list</url-pattern>
     </servlet-mapping>
 </web-app>
