@@ -64,6 +64,22 @@
         <servlet-name>ScheduleCampainListController</servlet-name>
         <servlet-class>Schedule.Controller.ScheduleCampainListController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PlanSelectController</servlet-name>
+        <servlet-class>Plan.Controller.PlanSelectController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PlanCampainSelectController</servlet-name>
+        <servlet-class>Plan.Controller.PlanCampainSelectController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ScheduleSelectController</servlet-name>
+        <servlet-class>Schedule.Controller.ScheduleSelectController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ScheduleEmployeeListController</servlet-name>
+        <servlet-class>Schedule.Controller.ScheduleEmployeeListController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -127,5 +143,21 @@
     <servlet-mapping>
         <servlet-name>ScheduleCampainListController</servlet-name>
         <url-pattern>/schedulecampain/list</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PlanSelectController</servlet-name>
+        <url-pattern>/plan/select</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PlanCampainSelectController</servlet-name>
+        <url-pattern>/plancampain/select</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ScheduleSelectController</servlet-name>
+        <url-pattern>/schedule/select</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ScheduleEmployeeListController</servlet-name>
+        <url-pattern>/scheduleemployee/list</url-pattern>
     </servlet-mapping>
 </web-app>

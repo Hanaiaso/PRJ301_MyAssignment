@@ -10,6 +10,49 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 public class EmployeeDBContext extends DBContext<Employee> {
+    public ArrayList<Employee> getEmployeesByDepartmentId(int departmentId) {
+    ArrayList<Employee> employees = new ArrayList<>();
+    String sql = "SELECT e.eid, e.ename, e.gender, e.address, e.dob, e.salary, e.isWork, " +
+                 "e.createdby, e.updatedby, e.updatedtime, d.did, d.dname, d.type " +
+                 "FROM Employee e " +
+                 "JOIN Department d ON e.did = d.did " +
+                 "WHERE e.did = ? AND e.isWork = 1";
+
+    try {
+        PreparedStatement stm = connection.prepareStatement(sql);
+        stm.setInt(1, departmentId);
+        ResultSet rs = stm.executeQuery();
+        while (rs.next()) {
+            Employee employee = new Employee();
+
+            // Thiết lập các thuộc tính của Employee
+            employee.setId(rs.getInt("eid"));
+            employee.setName(rs.getString("ename"));
+            employee.setGender(rs.getBoolean("gender"));
+            employee.setAddress(rs.getString("address"));
+            employee.setDob(rs.getDate("dob"));
+            employee.setSalary(rs.getDouble("salary"));
+            employee.setIswork(rs.getBoolean("isWork"));
+            employee.setUpdatedtime(rs.getTimestamp("updatedtime"));
+
+            // Thiết lập đối tượng Department cho Employee
+            Department dept = new Department();
+            dept.setId(rs.getInt("did"));
+            dept.setName(rs.getString("dname"));
+            dept.setType(rs.getString("type"));
+            employee.setDept(dept);
+
+            // Thêm đối tượng Employee vào danh sách
+            employees.add(employee);
+        }
+
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+
+    return employees;
+}
+
     public ArrayList<Employee> search(Integer id, String name, Boolean gender, String address, Date from, Date to, Integer did) {
         String sql = "SELECT e.eid, e.ename, e.gender, e.address, e.dob, d.did, d.dname, d.type "
                 + "FROM Employee e "

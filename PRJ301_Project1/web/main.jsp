@@ -18,14 +18,21 @@
             <a href="employee/create">
                 <button>Employee's Create</button>
             </a>
-             <a href="employee/deleteall">
+            <a href="employee/deleteall">
                 <button>Employee's Delete</button>
             </a>
-             <a href="plan/create">
+            <a href="plan/create">
                 <button>Create Plan</button>
             </a>
-             <a href="plan/list">
+            <a href="plan/list">
                 <button>List Plan</button>
+            </a>
+            <!-- Nút mới để phân công nhân viên -->
+            <a href="plan/select">
+                <button>Assign Employee</button>
+            </a>
+            <a href="scheduleemployee/list">
+                <button>Assigned Employee List</button>
             </a>
         </div>
     </body>

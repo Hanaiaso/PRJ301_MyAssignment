@@ -11,6 +11,16 @@ public class ScheduleCampain {
     private int quantity;
     private Product product;
     private ArrayList<ScheduleEmployee> scheduleemployee = new ArrayList<>();
+     private int assignedQuantity;
+
+    public int getAssignedQuantity() {
+        return assignedQuantity;
+    }
+
+    public void setAssignedQuantity(int assignedQuantity) {
+        this.assignedQuantity = assignedQuantity;
+    }
+     
     public int getId() {
         return id;
     }

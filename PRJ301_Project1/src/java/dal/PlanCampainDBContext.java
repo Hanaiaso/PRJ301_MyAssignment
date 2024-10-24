@@ -1,4 +1,5 @@
 package dal;
+import Employee.Entity.Department;
 import Plan.Entity.Plan;
 import Plan.Entity.PlanCampain;
 import Plan.Entity.Product;
@@ -53,32 +54,57 @@ public class PlanCampainDBContext extends DBContext<PlanCampain> {
     @Override
     public PlanCampain get(int id) {
         PlanCampain planCampain = null;
-        String sql = "SELECT pc.plcid, pc.Quantity, pc.Estimate, p.pid, p.pname, pl.plid, pl.plname "
-                + "FROM PlanCampain pc "
-                + "JOIN Product p ON pc.pid = p.pid "
-                + "JOIN [Plan] pl ON pc.plid = pl.plid "
-                + "WHERE pl.isDone = 0 AND pc.plcid = ?";
+        String sql = "SELECT pc.plcid, pc.Quantity, " +
+                     "p.pid, p.pname, " +
+                     "pl.plid, pl.plname, pl.StartDate, pl.EndDate, pl.isDone, " +
+                     "d.did, d.dname, d.type " +
+                     "FROM PlanCampain pc " +
+                     "JOIN Product p ON pc.pid = p.pid " +
+                     "JOIN [Plan] pl ON pc.plid = pl.plid " +
+                     "LEFT JOIN Department d ON pl.did = d.did " +
+                     "WHERE pl.isDone = 0 AND pc.plcid = ?";
+
         try {
             PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setInt(1, id);  
+            stm.setInt(1, id);
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
+                planCampain = new PlanCampain();
+                planCampain.setId(rs.getInt("plcid"));
+                planCampain.setQuantity(rs.getInt("Quantity"));
+
+                // Tạo đối tượng Product
                 Product product = new Product();
                 product.setId(rs.getInt("pid"));
                 product.setName(rs.getString("pname"));
+                planCampain.setProduct(product);
+
+                // Tạo đối tượng Plan
                 Plan plan = new Plan();
                 plan.setId(rs.getInt("plid"));
                 plan.setName(rs.getString("plname"));
-                planCampain = new PlanCampain();
-                planCampain.setId(rs.getInt("plcid"));
-                planCampain.setProduct(product);  
-                planCampain.setQuantity(rs.getInt("Quantity"));  
-                planCampain.setCost(rs.getFloat("Estimate"));  
-                planCampain.setPlan(plan);  
+                plan.setStart(rs.getDate("StartDate"));
+                plan.setEnd(rs.getDate("EndDate"));
+                plan.setIsDone(rs.getBoolean("isDone"));
+
+                // Tạo đối tượng Department và gán vào Plan nếu có dữ liệu
+                int departmentId = rs.getInt("did");
+                if (!rs.wasNull()) { // Kiểm tra nếu `did` không phải là `null`
+                    Department department = new Department();
+                    department.setId(departmentId);
+                    department.setName(rs.getString("dname"));
+                    department.setType(rs.getString("type"));
+                    plan.setDept(department);
+                }
+
+                // Gắn Plan vào PlanCampain
+                planCampain.setPlan(plan);
             }
+
         } catch (SQLException ex) {
-            Logger.getLogger(PlanCampainDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
-        return planCampain; 
+
+        return planCampain;
     }
 }
