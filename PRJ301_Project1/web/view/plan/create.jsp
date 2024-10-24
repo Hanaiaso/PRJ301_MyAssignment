@@ -1,8 +1,3 @@
-<%-- 
-    Document   : create
-    Created on : Oct 20, 2024, 4:34:45 PM
-    Author     : LEGION
---%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>

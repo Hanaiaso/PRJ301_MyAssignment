@@ -6,17 +6,15 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Chi tiết chiến dịch</title>
         <script>
-            // Tính tổng số lượng đã nhập
             function validateTotalQuantity(totalQuantity) {
                 var totalInput = 0;
                 var inputs = document.querySelectorAll('input[type="number"]');
                 inputs.forEach(function(input) {
                     totalInput += parseInt(input.value) || 0;
                 });
-
                 if (totalInput > totalQuantity) {
                     alert("Tổng số lượng bạn đã nhập vượt quá tổng số lượng sản phẩm phải làm!");
-                    return false; // Ngăn không cho submit nếu vượt quá giới hạn
+                    return false; 
                 }
                 return true;
             }
@@ -24,19 +22,14 @@
     </head>
     <body>
         <h1>Chi tiết chiến dịch</h1>
-
-        <!-- Hiển thị thông báo lỗi nếu có -->
         <c:if test="${not empty error}">
             <div style="color: red;">${error}</div>
         </c:if>
-
         <h3>Kế hoạch: ${plan.name}</h3>
         <h4>Sản phẩm: ${planCampain.product.name}</h4>
         <h4>Tổng số lượng sản phẩm phải làm: ${planCampain.quantity}</h4>
-
         <form action="create" method="POST" onsubmit="return validateTotalQuantity(${planCampain.quantity})">
             <input type="hidden" name="plcid" value="${planCampain.id}"/>
-
             <table border="1" cellpadding="5" cellspacing="0">
                 <thead>
                     <tr>
@@ -60,7 +53,6 @@
                     </c:forEach>
                 </tbody>
             </table>
-
             <br/>
             <input type="submit" value="Lưu"/>
         </form>

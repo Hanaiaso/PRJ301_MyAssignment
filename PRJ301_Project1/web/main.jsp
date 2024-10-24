@@ -1,9 +1,3 @@
-<%-- 
-    Document   : main
-    Created on : Oct 11, 2024, 12:41:42 PM
-    Author     : LEGION
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -14,9 +8,7 @@
     <body>
         <div>
             <form action="main" method="POST">
-
             </form>
-
             <a href="employee/list">
                 <button>Employee's List</button>
             </a>

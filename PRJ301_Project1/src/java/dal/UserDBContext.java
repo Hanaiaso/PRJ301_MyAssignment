@@ -1,9 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dal;
-
 import Login.Entity.Feature;
 import Login.Entity.Role;
 import Login.Entity.User;
@@ -11,13 +6,7 @@ import java.util.ArrayList;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-/**
- *
- * @author LEGION
- */
 public class UserDBContext extends DBContext<User> {
-
     boolean isUserActive(String username) {
         String sql = "SELECT isWork FROM [User] WHERE username = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
@@ -31,7 +20,6 @@ public class UserDBContext extends DBContext<User> {
         }
         return false;
     }
-
     public User get(String username, String password) {
         String sql = "SELECT username, displayname FROM [User] \n"
                 + "WHERE username = ? AND [password] = ?";
@@ -43,10 +31,8 @@ public class UserDBContext extends DBContext<User> {
                 stm.setString(1, username);
                 stm.setString(2, password);
                 ResultSet rs = stm.executeQuery();
-
                 if (rs.next()) {
                     user = new User();
-
                     user.setDisplayname(rs.getString("displayname"));
                     user.setUsername(rs.getString("username"));
                 }
@@ -63,7 +49,6 @@ public class UserDBContext extends DBContext<User> {
         }
         return user;
     }
-
     public ArrayList<Role> getRoles(String username) {
         String sql = "SELECT r.rid,r.rname,f.fid,f.fname,f.url FROM [User] u \n"
                 + "	INNER JOIN UserRole ur ON ur.username = u.username\n"
@@ -72,7 +57,6 @@ public class UserDBContext extends DBContext<User> {
                 + "	INNER JOIN Feature f ON f.fid = rf.fid\n"
                 + "WHERE u.username = ?\n"
                 + "ORDER BY r.rid, f.fid ASC";
-
         PreparedStatement stm = null;
         ArrayList<Role> roles = new ArrayList<>();
         try {
@@ -89,7 +73,6 @@ public class UserDBContext extends DBContext<User> {
                     c_role.setName(rs.getString("rname"));
                     roles.add(c_role);
                 }
-
                 Feature f = new Feature();
                 f.setId(rs.getInt("fid"));
                 f.setName(rs.getString("fname"));
@@ -107,34 +90,26 @@ public class UserDBContext extends DBContext<User> {
                 Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
         return roles;
-
     }
-
     @Override
     public void insert(User entity) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
     @Override
     public void update(User entity) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
     @Override
     public void delete(User entity) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
     @Override
     public ArrayList<User> list() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
     @Override
     public User get(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
 }

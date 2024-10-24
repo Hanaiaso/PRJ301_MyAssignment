@@ -1,8 +1,4 @@
-<%-- 
-    Document   : delete
-    Created on : Oct 19, 2024, 9:02:14 PM
-    Author     : LEGION
---%>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -12,18 +8,16 @@
         <title>JSP Page</title>
         <script>
             function confirmDelete() {
-                // Check if any checkbox is selected
                 const checkboxes = document.querySelectorAll('input[name="eids"]:checked');
                 if (checkboxes.length === 0) {
                     alert("Please select at least one employee to delete.");
-                    return false; // Prevent form submission
+                    return false; 
                 }
-
                 var result = confirm("Are you sure you want to delete the selected employees?");
                 if (result) {
-                    return true; // Allow form submission
+                    return true; 
                 } else {
-                    return false; // Prevent form submission
+                    return false; 
                 }
             }
         </script>
@@ -33,7 +27,7 @@
             <table border="1">
                 <thead>
                     <tr>
-                        <td>Select</td> <!-- Changed the header for clarity -->
+                        <td>Select</td> 
                         <td>Id</td>
                         <td>Name</td>
                         <td>Gender</td>
@@ -63,7 +57,6 @@
                     </c:forEach>
                 </tbody>
             </table>
-
             <br>
             <input type="submit" value="Delete Selected Employees"/>
         </form>

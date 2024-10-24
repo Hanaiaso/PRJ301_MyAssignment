@@ -1,54 +1,36 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Login.Controller;
-
 import Login.Entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-/**
- *
- * @author LEGION
- */
-public abstract class BaseAuthenticationController extends HttpServlet{
-    
+public abstract class BaseAuthenticationController extends HttpServlet{   
     private boolean isAuthenticated(HttpServletRequest req)
     {
       User user = (User)req.getSession().getAttribute("account");
       return user != null;
-    }
-    
+    }   
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if(isAuthenticated(req))
         {
-             //do business logic here
             User user = (User)req.getSession().getAttribute("account");
             doPost(req, resp, user);
         }
         else
             resp.sendError(403,"You do n't have right to access");
     }
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
          if(isAuthenticated(req))
         {
-            //do business logic here
             User user = (User)req.getSession().getAttribute("account");
             doGet(req, resp, user);
         }
         else
             resp.sendError(403,"You do n't have right to access");
     }
-
     protected abstract void doGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException;
-
-    protected abstract void doPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException;
-    
+    protected abstract void doPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException; 
 }

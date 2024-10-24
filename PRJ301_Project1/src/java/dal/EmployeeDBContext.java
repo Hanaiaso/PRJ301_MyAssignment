@@ -1,9 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dal;
-
 import Employee.Entity.Department;
 import Employee.Entity.Employee;
 import Login.Entity.User;
@@ -14,64 +9,46 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-/**
- *
- * @author LEGION
- */
 public class EmployeeDBContext extends DBContext<Employee> {
-
     public ArrayList<Employee> search(Integer id, String name, Boolean gender, String address, Date from, Date to, Integer did) {
         String sql = "SELECT e.eid, e.ename, e.gender, e.address, e.dob, d.did, d.dname, d.type "
                 + "FROM Employee e "
                 + "INNER JOIN Department d ON e.did = d.did "
-                + "WHERE e.isWork = 1";  // Chỉ lấy những nhân viên đang làm việc
-
+                + "WHERE e.isWork = 1";  
         ArrayList<Employee> emps = new ArrayList<>();
         ArrayList<Object> paramValues = new ArrayList<>();
-
-        // Kiểm tra kỹ các điều kiện đầu vào để tránh trường hợp null hoặc không hợp lệ
-        if (id != null && id > 0) {  // Kiểm tra id > 0
+        if (id != null && id > 0) {  
             sql += " AND e.eid = ?";
             paramValues.add(id);
         }
-
-        if (name != null && !name.trim().isEmpty()) {  // Kiểm tra name không rỗng
+        if (name != null && !name.trim().isEmpty()) {  
             sql += " AND e.ename LIKE ?";
             paramValues.add("%" + name + "%");
         }
-
         if (gender != null) {
             sql += " AND e.gender = ?";
             paramValues.add(gender);
         }
-
-        if (address != null && !address.trim().isEmpty()) {  // Kiểm tra address không rỗng
+        if (address != null && !address.trim().isEmpty()) {  
             sql += " AND e.[address] LIKE ?";
             paramValues.add("%" + address + "%");
         }
-
         if (from != null) {
             sql += " AND e.dob >= ?";
             paramValues.add(from);
         }
-
         if (to != null) {
             sql += " AND e.dob <= ?";
             paramValues.add(to);
         }
-
-        if (did != null && did > 0) {  // Kiểm tra did > 0
+        if (did != null && did > 0) {  
             sql += " AND d.did = ?";
             paramValues.add(did);
         }
-
-        // Thực hiện truy vấn an toàn hơn với try-with-resources
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             for (int i = 0; i < paramValues.size(); i++) {
                 stm.setObject(i + 1, paramValues.get(i));
             }
-
             try (ResultSet rs = stm.executeQuery()) {
                 while (rs.next()) {
                     Employee e = new Employee();
@@ -80,24 +57,19 @@ public class EmployeeDBContext extends DBContext<Employee> {
                     e.setGender(rs.getBoolean("gender"));
                     e.setDob(rs.getDate("dob"));
                     e.setAddress(rs.getString("address"));
-
                     Department d = new Department();
                     d.setId(rs.getInt("did"));
                     d.setName(rs.getString("dname"));
                     d.setType(rs.getString("type"));
                     e.setDept(d);
-
                     emps.add(e);
                 }
             }
         } catch (SQLException ex) {
-            // Log lỗi một cách an toàn mà không tiết lộ chi tiết về cấu trúc cơ sở dữ liệu
             Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, "Database query error", ex);
         }
-
         return emps;
     }
-
     @Override
     public void insert(Employee entity) {
         String sql_insert = "INSERT INTO [Employee]\n"
@@ -117,12 +89,9 @@ public class EmployeeDBContext extends DBContext<Employee> {
                 + "           ,?\n"
                 + "           ,?\n"
                 + "           ,?)";
-
         String sql_select = "SELECT @@IDENTITY as eid";
-
         PreparedStatement stm_insert = null;
         PreparedStatement stm_select = null;
-
         try {
             connection.setAutoCommit(false);
             stm_insert = connection.prepareStatement(sql_insert);
@@ -134,13 +103,11 @@ public class EmployeeDBContext extends DBContext<Employee> {
             stm_insert.setDouble(6, entity.getSalary());
             stm_insert.setString(7, entity.getCreatedby().getUsername());
             stm_insert.executeUpdate();
-
             stm_select = connection.prepareStatement(sql_select);
             ResultSet rs = stm_select.executeQuery();
             if (rs.next()) {
                 entity.setId(rs.getInt("eid"));
             }
-
             connection.commit();
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
@@ -158,7 +125,6 @@ public class EmployeeDBContext extends DBContext<Employee> {
             }
         }
     }
-
     @Override
     public void update(Employee entity) {
         String sql_update = "UPDATE [Employee]\n"
@@ -171,11 +137,8 @@ public class EmployeeDBContext extends DBContext<Employee> {
                 + "      ,[updatedby] = ?\n"
                 + "      ,[updatedtime] = GETDATE()\n"
                 + " WHERE eid = ?";
-
         PreparedStatement stm_update = null;
-
         try {
-
             stm_update = connection.prepareStatement(sql_update);
             stm_update.setString(1, entity.getName());
             stm_update.setBoolean(2, entity.isGender());
@@ -186,7 +149,6 @@ public class EmployeeDBContext extends DBContext<Employee> {
             stm_update.setString(7, entity.getUpdatedby().getUsername());
             stm_update.setInt(8, entity.getId());
             stm_update.executeUpdate();
-
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -197,19 +159,14 @@ public class EmployeeDBContext extends DBContext<Employee> {
             }
         }
     }
-
     @Override
     public void delete(Employee entity) {
         String sql_update = "UPDATE Employee SET isWork = 0 WHERE eid = ?";
-
         PreparedStatement stm_update = null;
-
         try {
-
             stm_update = connection.prepareStatement(sql_update);
             stm_update.setInt(1, entity.getId());
             stm_update.executeUpdate();
-
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -220,41 +177,31 @@ public class EmployeeDBContext extends DBContext<Employee> {
             }
         }
     }
-
     public void delete(String[] eids) {
     String sql_update = "UPDATE Employee SET isWork = 0 WHERE eid = ?";
     PreparedStatement stm_update = null;
-
     try {
-        // Prepare the SQL statement
         stm_update = connection.prepareStatement(sql_update);
-
-        // Iterate over each employee ID to update
         for (String eid : eids) {
-            stm_update.setInt(1, Integer.parseInt(eid)); // Convert the String eid to int
-            stm_update.addBatch(); // Add to batch for batch execution
+            stm_update.setInt(1, Integer.parseInt(eid)); 
+            stm_update.addBatch(); 
         }
-
-        // Execute all updates in the batch
         stm_update.executeBatch();
-
     } catch (SQLException ex) {
         Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
     } finally {
         try {
             if (stm_update != null) {
-                stm_update.close(); // Close the PreparedStatement
+                stm_update.close(); 
             }
             if (connection != null) {
-                connection.close(); // Close the Connection
+                connection.close(); 
             }
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
-
-
     @Override
     public ArrayList<Employee> list() {
         ArrayList<Employee> emps = new ArrayList<>();
@@ -277,11 +224,8 @@ public class EmployeeDBContext extends DBContext<Employee> {
                 e.setGender(rs.getBoolean("gender"));
                 e.setDob(rs.getDate("dob"));
                 e.setAddress(rs.getString("address"));
-
                 emps.add(e);
-
             }
-
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -294,7 +238,6 @@ public class EmployeeDBContext extends DBContext<Employee> {
         }
         return emps;
     }
-
     @Override
     public Employee get(int id) {
         PreparedStatement command = null;
@@ -309,7 +252,6 @@ public class EmployeeDBContext extends DBContext<Employee> {
                     + "	INNER JOIN [User] c ON c.username = e.createdby\n"
                     + "	LEFT JOIN [User] u ON u.username = e.updatedby\n"
                     + "	WHERE e.isWork = 1 AND e.eid = ?";
-
             command = connection.prepareStatement(sql);
             command.setInt(1, id);
             ResultSet rs = command.executeQuery();
@@ -322,18 +264,15 @@ public class EmployeeDBContext extends DBContext<Employee> {
                 e.setAddress(rs.getString("address"));
                 e.setSalary(rs.getDouble("salary"));
                 e.setUpdatedtime(rs.getTimestamp("updatedtime"));
-
                 Department d = new Department();
                 d.setId(rs.getInt("did"));
                 d.setName(rs.getString("dname"));
                 d.setType(rs.getString("type"));
                 e.setDept(d);
-
                 User c = new User();
                 c.setUsername(rs.getString("cusername"));
                 c.setDisplayname(rs.getString("cdisplayname"));
                 e.setCreatedby(c);
-
                 String uusername = rs.getString("uusername");
                 if (uusername != null) {
                     User u = new User();
@@ -341,10 +280,8 @@ public class EmployeeDBContext extends DBContext<Employee> {
                     u.setDisplayname(rs.getString("udisplayname"));
                     e.setUpdatedby(u);
                 }
-
                 return e;
             }
-
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

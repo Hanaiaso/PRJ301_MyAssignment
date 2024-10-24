@@ -31,8 +31,6 @@
         <div class="message">
             <strong>${message}</strong>
         </div>
-
-        <!-- Nút quay lại -->
         <form action="javascript:history.back()">
             <button class="back-button">Quay lại</button>
         </form>

@@ -1,9 +1,3 @@
-<%-- 
-    Document   : list
-    Created on : Oct 13, 2024, 9:06:05 PM
-    Author     : LEGION
---%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -19,8 +13,7 @@
                 <td>Name</td>
                 <td>Gender</td>
                 <td>Dob</td>
-                <td>Address</td>
-                
+                <td>Address</td>               
             </tr>
             <c:forEach items="${requestScope.emps}" var="e">
              <tr>
@@ -32,16 +25,12 @@
                     </c:if>
                     <c:if test="${!e.gender}">
                         Female
-                    </c:if>
-                    
+                    </c:if>                   
                 </td>
                 <td>${e.dob}</td>
-                <td>${e.address}</td>
-                
-            </tr>   
-                
-            </c:forEach>
-            
+                <td>${e.address}</td>                
+            </tr>                  
+            </c:forEach>          
         </table>
     </body>
 </html>

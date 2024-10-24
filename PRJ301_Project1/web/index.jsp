@@ -1,9 +1,3 @@
-<%-- 
-    Document   : index.jsp
-    Created on : Oct 18, 2024, 1:29:16 PM
-    Author     : LEGION
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -115,11 +109,7 @@
             <div class="header">
                 <img src="img/images.png" alt="Logo" class="logo">           
             </div>
-
-            <!-- Nút LOGIN để hiển thị form -->
             <button id="showFormBtn">LOGIN</button>
-
-            <!-- Form nhập username và password ban đầu sẽ ẩn -->
             <form id="loginForm" action="login" method="POST">
                 <input type="text" name="username" placeholder="Username" required /><br/>
                 <input type="password" name="password" placeholder="Password" required /><br/>
@@ -141,23 +131,17 @@
                 <p>Phone: 0986429391</p>
             </div>
         </div>
-
         <script>
             const showFormBtn = document.getElementById('showFormBtn');
             const loginForm = document.getElementById('loginForm');
             const cancelBtn = document.querySelector('.cancelBtn');
-
-            // Khi nhấn vào nút LOGIN, hiển thị form và ẩn nút LOGIN
             showFormBtn.addEventListener('click', function () {
-                loginForm.classList.add('visible'); // Hiện form
-                showFormBtn.style.display = 'none'; // Ẩn nút LOGIN
+                loginForm.classList.add('visible'); 
+                showFormBtn.style.display = 'none'; 
             });
-
-            // Khi nhấn vào nút Cancel, ẩn form và hiển thị lại nút LOGIN
             cancelBtn.addEventListener('click', function () {
-                loginForm.classList.remove('visible'); // Ẩn form
-                showFormBtn.style.display = 'block'; // Hiển thị lại nút LOGIN
-                // Xóa giá trị trong các trường input
+                loginForm.classList.remove('visible'); 
+                showFormBtn.style.display = 'block'; 
                 document.querySelector('input[name="username"]').value = '';
                 document.querySelector('input[name="password"]').value = '';
             });

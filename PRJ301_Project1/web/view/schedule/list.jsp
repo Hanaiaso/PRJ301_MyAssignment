@@ -22,11 +22,9 @@
     </head>
     <body>
         <h1>Danh sách các kế hoạch đã tạo</h1>
-
         <c:if test="${empty schedules}">
             <p>Không có kế hoạch nào đã được tạo.</p>
         </c:if>
-
         <c:if test="${not empty schedules}">
             <table>
                 <thead>
@@ -55,7 +53,6 @@
                 </tbody>
             </table>
         </c:if>
-
         <br/>
         <a href="javascript:history.back()">Quay lại</a>
     </body>

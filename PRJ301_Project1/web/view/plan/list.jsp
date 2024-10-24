@@ -16,8 +16,6 @@
 </head>
 <body>
     <h1>Danh sách các kế hoạch</h1>
-    
-
     <table border="1" cellpadding="5" cellspacing="0">
         <thead>
             <tr>
@@ -36,8 +34,8 @@
             <c:choose>
                 <c:when test="${not empty plans}">
                     <c:forEach var="plan" items="${plans}">
-                        <c:if test="${not empty plan.campains}"> <!-- Check if the plan has campaigns -->
-                            <c:forEach var="campaign" items="${plan.campains}"> <!-- Loop through campaigns -->
+                        <c:if test="${not empty plan.campains}"> 
+                            <c:forEach var="campaign" items="${plan.campains}"> 
                                 <tr>
                                     <td>${plan.id}</td>
                                     <td>${plan.name}</td>
@@ -56,13 +54,12 @@
                                         <a href="../schedulecampain/list?plcid=${campaign.id}&plid=${plan.id}">Chi tiết</a>
                                     </td>
                                     <td>
-                                <!-- Thêm nút để đi đến chi tiết chiến dịch -->
                                 <a href="../schedulecampain/create?plid=${plan.id}&plcid=${campaign.id}">Thêm Kế Hoạch Chi tiết</a>
                             </td>
                                 </tr>
                             </c:forEach>
                         </c:if>
-                        <c:if test="${empty plan.campains}"> <!-- If no campaigns, display plan info -->
+                        <c:if test="${empty plan.campains}"> 
                             <tr>
                                 <td>${plan.id}</td>
                                 <td>${plan.name}</td>
