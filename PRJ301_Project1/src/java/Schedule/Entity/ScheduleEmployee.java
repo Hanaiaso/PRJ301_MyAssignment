@@ -1,11 +1,16 @@
 package Schedule.Entity;
+
 import Employee.Entity.Employee;
 import java.util.ArrayList;
+
 public class ScheduleEmployee {
+
     private int id;
     private ScheduleCampain schedulecampain;
     private int quantity;
     private ArrayList<Employee> employee = new ArrayList<>();
+    
+
 
     // Getter and Setter for id
     public int getId() {
@@ -45,8 +50,8 @@ public class ScheduleEmployee {
 
     // New getters for properties derived from nested objects
     public String getPlanName() {
-        if (schedulecampain != null && schedulecampain.getPlancampain() != null &&
-                schedulecampain.getPlancampain().getPlan() != null) {
+        if (schedulecampain != null && schedulecampain.getPlancampain() != null
+                && schedulecampain.getPlancampain().getPlan() != null) {
             return schedulecampain.getPlancampain().getPlan().getName();
         }
         return null;
@@ -60,9 +65,9 @@ public class ScheduleEmployee {
     }
 
     public String getDepartmentName() {
-        if (schedulecampain != null && schedulecampain.getPlancampain() != null &&
-                schedulecampain.getPlancampain().getPlan() != null &&
-                schedulecampain.getPlancampain().getPlan().getDept() != null) {
+        if (schedulecampain != null && schedulecampain.getPlancampain() != null
+                && schedulecampain.getPlancampain().getPlan() != null
+                && schedulecampain.getPlancampain().getPlan().getDept() != null) {
             return schedulecampain.getPlancampain().getPlan().getDept().getName();
         }
         return null;

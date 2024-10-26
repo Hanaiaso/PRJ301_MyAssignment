@@ -28,8 +28,8 @@ public class ScheduleEmployeeCreateController extends HttpServlet {
         int departmentId = schedule.getPlancampain().getPlan().getDept().getId();
         EmployeeDBContext employeeDB = new EmployeeDBContext();
         ArrayList<Employee> employees = employeeDB.getEmployeesByDepartmentId(departmentId);
-        System.out.println("Department ID: " + departmentId);
-        System.out.println("Total employees retrieved: " + employees.size());
+//        System.out.println("Department ID: " + departmentId);
+//        System.out.println("Total employees retrieved: " + employees.size());
         // Gửi dữ liệu sang JSP
         request.setAttribute("schedule", schedule);
         request.setAttribute("employees", employees);

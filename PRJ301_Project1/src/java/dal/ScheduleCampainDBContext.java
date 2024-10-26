@@ -7,6 +7,7 @@ import Schedule.Entity.ScheduleCampain;
 import java.util.ArrayList;
 import java.sql.*;
 public class ScheduleCampainDBContext extends DBContext<ScheduleCampain> {
+    
     public ArrayList<ScheduleCampain> getSchedulesByPlanCampainId(int planCampainId) {
         ArrayList<ScheduleCampain> schedules = new ArrayList<>();
         String sql = "SELECT sc.scid, sc.plcid, sc.Date, sc.Shift, sc.Quantity, " +

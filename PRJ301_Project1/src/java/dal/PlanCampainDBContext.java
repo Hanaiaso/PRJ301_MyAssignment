@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 public class PlanCampainDBContext extends DBContext<PlanCampain> {
-    public List<PlanCampain> getCampainsByPlanId(int plid) {
-        List<PlanCampain> campains = new ArrayList<>();
+    
+    public ArrayList<PlanCampain> getCampainsByPlanId(int plid) {
+        ArrayList<PlanCampain> campains = new ArrayList<>();
         String sqlSelectCampain = "SELECT pc.plcid, pc.Quantity, pc.Estimate, p.pid, p.pname "
                 + "FROM PlanCampain pc "
                 + "JOIN Product p ON pc.pid = p.pid "

@@ -37,6 +37,6 @@ public class ScheduleSelectController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int scid = Integer.parseInt(request.getParameter("scid"));
-        response.sendRedirect("../scheduleemployee/create?scid=" + scid);
+        response.sendRedirect("../employee/attendance?scid=" + scid);
     }
 }

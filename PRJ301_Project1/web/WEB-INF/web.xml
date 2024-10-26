@@ -80,6 +80,10 @@
         <servlet-name>ScheduleEmployeeListController</servlet-name>
         <servlet-class>Schedule.Controller.ScheduleEmployeeListController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EmployeeAttendanceController</servlet-name>
+        <servlet-class>Schedule.Controller.EmployeeAttendanceController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -159,5 +163,9 @@
     <servlet-mapping>
         <servlet-name>ScheduleEmployeeListController</servlet-name>
         <url-pattern>/scheduleemployee/list</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EmployeeAttendanceController</servlet-name>
+        <url-pattern>/employee/attendance</url-pattern>
     </servlet-mapping>
 </web-app>
