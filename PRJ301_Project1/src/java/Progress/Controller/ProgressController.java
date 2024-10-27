@@ -16,86 +16,39 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 
-/**
- *
- * @author LEGION
- */
+
 public class ProgressController extends HttpServlet {
 
-   @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    // Lấy danh sách kế hoạch từ DBContext
-    PlanDBContext planDB = new PlanDBContext();
-    ArrayList<Plan> plans = planDB.list();
-    request.setAttribute("plans", plans);
+  @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        PlanDBContext planDB = new PlanDBContext();
+        ArrayList<Plan> plans = planDB.list();
+        request.setAttribute("plans", plans);
 
-    String planIdParam = request.getParameter("planId");
-    if (planIdParam != null && !planIdParam.isEmpty()) {
-        int planId = Integer.parseInt(planIdParam);
-        ProgressDBContext progressDB = new ProgressDBContext();
-        ArrayList<Progress> progresses = progressDB.getDetailedProgressByPlanId(planId);
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        Gson gson = new Gson();
-        try (PrintWriter out = response.getWriter()) {
-            out.print(gson.toJson(progresses));
-            out.flush();
+        String planIdParam = request.getParameter("planId");
+        if (planIdParam != null && !planIdParam.isEmpty()) {
+            int planId = Integer.parseInt(planIdParam);
+            ProgressDBContext progressDB = new ProgressDBContext();
+            Progress progress = progressDB.getProgressByPlanId(planId);
+            request.setAttribute("progress", progress);
+            
+            Plan progressdate = progressDB.getPlanById(planId);
+            request.setAttribute("progressdate", progressdate);
+            request.setAttribute("currentDate", new Date());
         }
-    } else {
+
         request.getRequestDispatcher("/view/schedule/progress.jsp").forward(request, response);
     }
-}
+
 
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Không cần xử lý POST cho chức năng này
+        
     }
 
-//    // Lớp để lưu thông tin tiến độ kế hoạch (sử dụng cho việc chuyển đổi thành JSON)
-//    private class PlanProgressResponse {
-//
-//        private String planName;
-//        private int totalProducts;
-//        private int completedProducts;
-//        private int remainingProducts;
-//
-//        // Getters and setters
-//        public String getPlanName() {
-//            return planName;
-//        }
-//
-//        public void setPlanName(String planName) {
-//            this.planName = planName;
-//        }
-//
-//        public int getTotalProducts() {
-//            return totalProducts;
-//        }
-//
-//        public void setTotalProducts(int totalProducts) {
-//            this.totalProducts = totalProducts;
-//        }
-//
-//        public int getCompletedProducts() {
-//            return completedProducts;
-//        }
-//
-//        public void setCompletedProducts(int completedProducts) {
-//            this.completedProducts = completedProducts;
-//        }
-//
-//        public int getRemainingProducts() {
-//            return remainingProducts;
-//        }
-//
-//        public void setRemainingProducts(int remainingProducts) {
-//            this.remainingProducts = remainingProducts;
-//        }
-//    }
 }

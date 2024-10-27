@@ -12,47 +12,18 @@ import java.util.Date;
  * @author LEGION
  */
 public class Progress {
-    private Plan plan;
-    private Date startDate;
-    private Date endDate;
-    private Date progressDate; // Ngày theo dõi tiến độ
-    private int totalProducts;
-    private int completedProducts;
-    private int remainingProducts;
-    private String status;
+     private Plan plan;
+    private int totalProducts; // Tổng số sản phẩm đã giao
+    private int completedProducts; // Tổng số sản phẩm đã hoàn thành
+    private int remainingProducts; // Số sản phẩm còn lại
+    private String status; // Trạng thái kế hoạch: Hoàn thành, Đang tiến hành, Muộn
 
-    // Getters và setters cho thuộc tính mới
-    public Date getProgressDate() {
-        return progressDate;
-    }
-
-    public void setProgressDate(Date progressDate) {
-        this.progressDate = progressDate;
-    }
-
-    // Các getter và setter khác
     public Plan getPlan() {
         return plan;
     }
 
     public void setPlan(Plan plan) {
         this.plan = plan;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
     }
 
     public int getTotalProducts() {
