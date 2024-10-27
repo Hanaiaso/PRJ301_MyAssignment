@@ -10,6 +10,23 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 public class PlanDBContext extends DBContext<Plan> {
+    public ArrayList<Plan> getPlans() {
+        ArrayList<Plan> plans = new ArrayList<>();
+        String sql = "SELECT * FROM [Plan] WHERE isDone = 0";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Plan plan = new Plan();
+                plan.setId(rs.getInt("plid"));
+                plan.setName(rs.getString("plname"));
+                plans.add(plan);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return plans;
+    }
+
     @Override
     public void insert(Plan entity) {
         String sqlInsertPlan = "INSERT INTO [Plan] ([plname], [StartDate], [EndDate], [did]) VALUES (?, ?, ?, ?)";

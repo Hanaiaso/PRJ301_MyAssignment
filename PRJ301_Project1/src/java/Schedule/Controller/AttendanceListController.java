@@ -4,8 +4,8 @@
  */
 package Schedule.Controller;
 
-import Schedule.Entity.ScheduleCampain;
-import dal.ScheduleCampainDBContext;
+import Schedule.Entity.Attendance;
+import dal.AttendanceDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,25 +18,25 @@ import java.util.ArrayList;
  *
  * @author LEGION
  */
-public class ScheduleSelectController extends HttpServlet {
+public class AttendanceListController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        int plcid = Integer.parseInt(request.getParameter("plcid"));
-        ScheduleCampainDBContext scDB = new ScheduleCampainDBContext();
-        ArrayList<ScheduleCampain> schedules = scDB.getSchedulesByPlanCampainId(plcid);
-
-        request.setAttribute("schedules", schedules);
-        request.setAttribute("plcid", plcid);
-        request.getRequestDispatcher("../view/plan/select_schedule.jsp").forward(request, response);
+        // Khởi tạo AttendanceDBContext để lấy danh sách Attendance
+        AttendanceDBContext attendanceDB = new AttendanceDBContext();
+        // Lấy danh sách tất cả các bản ghi attendance
+        ArrayList<Attendance> attendances = attendanceDB.list();
+      
+        // Đặt danh sách attendance vào request để truyền cho JSP
+        request.setAttribute("attendances", attendances);
+        request.getRequestDispatcher("../view/schedule/attendance_list.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int scid = Integer.parseInt(request.getParameter("scid"));
-        response.sendRedirect("../scheduleemployee/create?scid=" + scid);
+
     }
+
 }

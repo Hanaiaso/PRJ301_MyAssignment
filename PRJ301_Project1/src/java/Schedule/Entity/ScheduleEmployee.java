@@ -8,10 +8,16 @@ public class ScheduleEmployee {
     private int id;
     private ScheduleCampain schedulecampain;
     private int quantity;
-    private ArrayList<Employee> employee = new ArrayList<>();
-    
+    private Employee employee = new Employee();
+    private boolean isAttendanceRecorded;
 
+    public boolean isAttendanceRecorded() {
+        return isAttendanceRecorded;
+    }
 
+    public void setAttendanceRecorded(boolean isAttendanceRecorded) {
+        this.isAttendanceRecorded = isAttendanceRecorded;
+    }
     // Getter and Setter for id
     public int getId() {
         return id;
@@ -40,13 +46,15 @@ public class ScheduleEmployee {
     }
 
     // Getter and Setter for employee list
-    public ArrayList<Employee> getEmployee() {
+
+    public Employee getEmployee() {
         return employee;
     }
 
-    public void setEmployee(ArrayList<Employee> employee) {
+    public void setEmployee(Employee employee) {
         this.employee = employee;
     }
+  
 
     // New getters for properties derived from nested objects
     public String getPlanName() {

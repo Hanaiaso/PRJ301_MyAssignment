@@ -67,8 +67,18 @@
         </a>
 
         <!-- Nút chấm công cho nhân viên -->
-        <a href="plan/select">
+        <a href="employee/attendance">
             <button type="button">Employee Attendance</button>
+        </a>
+        
+        <!-- Nút danh sách chấm công nhân viên -->
+        <a href="attendance/list">
+            <button type="button">Employee Attendance List</button>
+        </a>
+        
+        <!-- Nút theo dõi tiến độ -->
+        <a href="progress">
+            <button type="button">Progress</button>
         </a>
     </div>
 </body>

@@ -14,66 +14,62 @@ public class ScheduleEmployeeDBContext extends DBContext<ScheduleEmployee> {
 
     public ArrayList<ScheduleEmployee> getEmployeesByScheduleId(int scheduleId) {
         ArrayList<ScheduleEmployee> assignedEmployees = new ArrayList<>();
-        String sql = "SELECT se.scid, se.eid, se.Quantity, sc.Date, sc.Shift, " +
-                     "pl.plid, pl.plname, pc.plcid, d.did, d.dname, d.type, e.eid, e.ename " +
-                     "FROM SchedualEmployee se " +
-                     "JOIN SchedualCampaign sc ON se.scid = sc.scid " +
-                     "JOIN PlanCampain pc ON sc.plcid = pc.plcid " +
-                     "JOIN [Plan] pl ON pc.plid = pl.plid " +
-                     "JOIN [Department] d ON pl.did = d.did " +
-                     "JOIN Employee e ON se.eid = e.eid " +
-                     "WHERE sc.scid = ? " +
-                     "ORDER BY e.ename";
+        String sql = "SELECT se.seid, se.scid, se.Quantity, sc.Date, sc.Shift, "
+                + "pl.plid, pl.plname, pc.plcid, d.did, d.dname, d.type, e.eid, e.ename, e.salary "
+                + "FROM SchedualEmployee se "
+                + "JOIN SchedualCampaign sc ON se.scid = sc.scid "
+                + "JOIN PlanCampain pc ON sc.plcid = pc.plcid "
+                + "JOIN [Plan] pl ON pc.plid = pl.plid "
+                + "JOIN [Department] d ON pl.did = d.did "
+                + "JOIN Employee e ON se.eid = e.eid "
+                + "WHERE e.isWork = 1 AND sc.scid = ? "
+                + "ORDER BY e.ename";
 
-        try {
-            PreparedStatement stm = connection.prepareStatement(sql);
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setInt(1, scheduleId);
-            ResultSet rs = stm.executeQuery();
-            while (rs.next()) {
-                // Create a ScheduleEmployee object
-                ScheduleEmployee scheduleEmployee = new ScheduleEmployee();
-                scheduleEmployee.setQuantity(rs.getInt("Quantity"));
+            try (ResultSet rs = stm.executeQuery()) {
+                while (rs.next()) {
+                    // Tạo đối tượng ScheduleEmployee
+                    ScheduleEmployee scheduleEmployee = new ScheduleEmployee();
+                    scheduleEmployee.setId(rs.getInt("seid")); // Gán giá trị ID đúng từ kết quả truy vấn
+                    scheduleEmployee.setQuantity(rs.getInt("Quantity"));
 
-                // Create a ScheduleCampain object
-                ScheduleCampain scheduleCampain = new ScheduleCampain();
-                scheduleCampain.setId(rs.getInt("scid"));
-                scheduleCampain.setDate(rs.getDate("Date"));
-                scheduleCampain.setShift(rs.getInt("Shift"));
+                    // Tạo đối tượng ScheduleCampain
+                    ScheduleCampain scheduleCampain = new ScheduleCampain();
+                    scheduleCampain.setId(rs.getInt("scid"));
+                    scheduleCampain.setDate(rs.getDate("Date"));
+                    scheduleCampain.setShift(rs.getInt("Shift"));
 
-                // Create a Plan object
-                Plan plan = new Plan();
-                plan.setId(rs.getInt("plid"));
-                plan.setName(rs.getString("plname"));
+                    // Tạo đối tượng Plan
+                    Plan plan = new Plan();
+                    plan.setId(rs.getInt("plid"));
+                    plan.setName(rs.getString("plname"));
 
-                // Create a PlanCampain object
-                PlanCampain planCampain = new PlanCampain();
-                planCampain.setId(rs.getInt("plcid"));
-                planCampain.setPlan(plan);
+                    // Tạo đối tượng PlanCampain
+                    PlanCampain planCampain = new PlanCampain();
+                    planCampain.setId(rs.getInt("plcid"));
+                    planCampain.setPlan(plan);
 
-                // Assign ScheduleCampain to ScheduleEmployee
-                scheduleCampain.setPlancampain(planCampain);
-                scheduleEmployee.setSchedulecampain(scheduleCampain);
+                    // Gán PlanCampain vào ScheduleCampain
+                    scheduleCampain.setPlancampain(planCampain);
 
-                // Create Employee object and add it to the list within ScheduleEmployee
-                Employee employee = new Employee();
-                employee.setId(rs.getInt("eid"));
-                employee.setName(rs.getString("ename"));
-                scheduleEmployee.getEmployee().add(employee);
+                    // Gán ScheduleCampain vào ScheduleEmployee
+                    scheduleEmployee.setSchedulecampain(scheduleCampain);
 
-                // Add ScheduleEmployee object to the list
-                assignedEmployees.add(scheduleEmployee);
+                    // Tạo đối tượng Employee và gán vào ScheduleEmployee
+                    Employee employee = new Employee();
+                    employee.setId(rs.getInt("eid"));
+                    employee.setName(rs.getString("ename"));
+                    scheduleEmployee.setEmployee(employee);
+
+                    // Thêm ScheduleEmployee vào danh sách
+                    assignedEmployees.add(scheduleEmployee);
+                }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
+
         return assignedEmployees;
     }
 
@@ -120,9 +116,9 @@ public class ScheduleEmployeeDBContext extends DBContext<ScheduleEmployee> {
                 Employee employee = new Employee();
                 employee.setId(rs.getInt("eid"));
                 employee.setName(rs.getString("ename"));
-                ArrayList<Employee> employeeList = new ArrayList<>();
-                employeeList.add(employee);
-                scheduleEmployee.setEmployee(employeeList);
+                //ArrayList<Employee> employeeList = new ArrayList<>();
+                //employeeList.add(employee);
+                scheduleEmployee.setEmployee(employee);
 
                 // Set department name for ScheduleEmployee
                 scheduleEmployee.getSchedulecampain().getPlancampain().getPlan().setDept(new Department());
@@ -290,7 +286,7 @@ public class ScheduleEmployeeDBContext extends DBContext<ScheduleEmployee> {
                 Employee employee = new Employee();
                 employee.setId(rs.getInt("eid"));
                 employee.setName(rs.getString("ename"));
-                scheduleEmployee.getEmployee().add(employee);
+                scheduleEmployee.getEmployee();
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -360,9 +356,9 @@ public class ScheduleEmployeeDBContext extends DBContext<ScheduleEmployee> {
                 Employee employee = new Employee();
                 employee.setId(rs.getInt("eid"));
                 employee.setName(rs.getString("ename"));
-                ArrayList<Employee> employees = new ArrayList<>();
-                employees.add(employee);
-                scheduleEmployee.setEmployee(employees);
+                //ArrayList<Employee> employees = new ArrayList<>();
+                //employees.add(employee);
+                scheduleEmployee.setEmployee(employee);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

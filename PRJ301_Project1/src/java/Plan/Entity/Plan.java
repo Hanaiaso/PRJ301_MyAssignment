@@ -10,6 +10,25 @@ public class Plan {
     private Department dept;
     private boolean isDone;
     private ArrayList<PlanCampain> campains = new ArrayList<>();
+    private int totalProducts; // Tổng số sản phẩm
+    private int completedProducts; // Số sản phẩm đã hoàn thành
+
+    public int getTotalProducts() {
+        return totalProducts;
+    }
+
+    public void setTotalProducts(int totalProducts) {
+        this.totalProducts = totalProducts;
+    }
+
+    public int getCompletedProducts() {
+        return completedProducts;
+    }
+
+    public void setCompletedProducts(int completedProducts) {
+        this.completedProducts = completedProducts;
+    }
+    
     public Plan() {
     }
     public Plan( String name, Date start, Date end, Department dept) {    

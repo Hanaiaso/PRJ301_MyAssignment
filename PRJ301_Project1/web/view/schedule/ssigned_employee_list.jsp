@@ -43,18 +43,18 @@
             </thead>
             <tbody>
                 <c:forEach var="assignment" items="${assignedEmployees}">
-                    <c:forEach var="employee" items="${assignment.employee}">
+                    
                         <tr>
                             <td>${assignment.planName}</td>
                             <td>${assignment.planCampainId}</td>
                             <td>${assignment.departmentName}</td>
                             <td>${assignment.date}</td>
                             <td>${assignment.shift}</td>
-                            <td>${employee.id}</td>
-                            <td>${employee.name}</td>
+                            <td>${assignment.employee.id}</td>
+                            <td>${assignment.employee.name}</td>
                             <td>${assignment.quantity}</td>
                         </tr>
-                    </c:forEach>
+                    
                 </c:forEach>
             </tbody>
         </table>
