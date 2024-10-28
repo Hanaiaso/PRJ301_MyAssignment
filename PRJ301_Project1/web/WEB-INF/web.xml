@@ -92,6 +92,10 @@
         <servlet-name>ProgressController</servlet-name>
         <servlet-class>Progress.Controller.ProgressController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProgressDetailsController</servlet-name>
+        <servlet-class>Progress.Controller.ProgressDetailsController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -183,5 +187,9 @@
     <servlet-mapping>
         <servlet-name>ProgressController</servlet-name>
         <url-pattern>/progress</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProgressDetailsController</servlet-name>
+        <url-pattern>/progressdetails</url-pattern>
     </servlet-mapping>
 </web-app>

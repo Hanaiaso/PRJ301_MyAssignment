@@ -4,20 +4,24 @@
  */
 package Progress.Entity;
 
+import Employee.Entity.Department;
 import Plan.Entity.Plan;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
  * @author LEGION
  */
 public class Progress {
-     private Plan plan;
+   private Plan plan;
     private int totalProducts; // Tổng số sản phẩm đã giao
     private int completedProducts; // Tổng số sản phẩm đã hoàn thành
     private int remainingProducts; // Số sản phẩm còn lại
     private String status; // Trạng thái kế hoạch: Hoàn thành, Đang tiến hành, Muộn
+    private Department department; // Bộ phận liên quan đến kế hoạch
 
+    // Getters và setters cho tất cả các thuộc tính
     public Plan getPlan() {
         return plan;
     }
@@ -57,6 +61,15 @@ public class Progress {
     public void setStatus(String status) {
         this.status = status;
     }
-    
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+ 
     
 }
