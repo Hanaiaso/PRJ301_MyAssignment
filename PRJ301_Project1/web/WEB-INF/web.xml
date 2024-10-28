@@ -112,6 +112,22 @@
         <servlet-name>ProductDeleteController</servlet-name>
         <servlet-class>Product.Controller.ProductDeleteController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UserCreateController</servlet-name>
+        <servlet-class>User.Controller.UserCreateController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserListController</servlet-name>
+        <servlet-class>User.Controller.UserListController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserDeleteController</servlet-name>
+        <servlet-class>User.Controller.UserDeleteController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserUpdateController</servlet-name>
+        <servlet-class>User.Controller.UserUpdateController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -223,5 +239,21 @@
     <servlet-mapping>
         <servlet-name>ProductDeleteController</servlet-name>
         <url-pattern>/product/delete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserCreateController</servlet-name>
+        <url-pattern>/user/create</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserListController</servlet-name>
+        <url-pattern>/user/list</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserDeleteController</servlet-name>
+        <url-pattern>/user/delete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserUpdateController</servlet-name>
+        <url-pattern>/user/update</url-pattern>
     </servlet-mapping>
 </web-app>
