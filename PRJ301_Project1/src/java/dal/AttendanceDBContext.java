@@ -18,6 +18,62 @@ import java.util.List;
 
 public class AttendanceDBContext extends DBContext<Attendance> {
 
+    public ArrayList<Employee> getEmployeeBonusForPlan(int planId) {
+        String sql = "SELECT e.eid, e.ename, a.alpha \n"
+                + "                 FROM Employee e join SchedualEmployee se on e.eid = se.eid \n"
+                + "                 JOIN [Attendence] a ON a.seid = se.seid\n"
+                + "				 join SchedualCampaign sc on sc.scid = se.scid\n"
+                + "				 join PlanCampain pc on pc.plcid = sc.plcid\n"
+                + "                 JOIN [Plan] p ON p.plid = pc.plid\n"
+                + "                 WHERE p.plid = ? ";
+
+        ArrayList<Employee> employees = new ArrayList<>();
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, planId);
+            ResultSet rs = stm.executeQuery();
+
+            Employee currentEmployee = null;
+            int bonusPoints = 0;
+
+            while (rs.next()) {
+                int employeeId = rs.getInt("eid");
+
+                // If we encounter a new employee, add the old one to the list
+                if (currentEmployee == null || currentEmployee.getId() != employeeId) {
+                    if (currentEmployee != null) {
+                        currentEmployee.setAdditionalBonus(bonusPoints * 20000);
+                        employees.add(currentEmployee);
+                        System.out.println("Added employee: " + currentEmployee.getName() + " with bonus: " + currentEmployee.getAdditionalBonus());
+                    }
+
+                    // Create new employee object
+                    currentEmployee = new Employee();
+                    currentEmployee.setId(employeeId);
+                    currentEmployee.setName(rs.getString("ename"));
+                    bonusPoints = 0; // Reset bonus points for new employee
+                }
+
+                // Calculate bonus points for current employee
+                double alpha = rs.getDouble("alpha");
+                if (alpha >= 1) {
+                    bonusPoints += 1;
+                }
+            }
+
+            // Add the last employee to the list
+            if (currentEmployee != null) {
+                currentEmployee.setAdditionalBonus(bonusPoints * 20000);
+                employees.add(currentEmployee);
+                System.out.println("Added employee: " + currentEmployee.getName() + " with bonus: " + currentEmployee.getAdditionalBonus());
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return employees;
+    }
+
     // Kiểm tra xem ScheduleEmployee có bản ghi attendance hay không
     public boolean isAttendanceRecorded(int scheduleEmployeeId) {
         String sql = "SELECT COUNT(*) AS total FROM Attendence WHERE seid = ?";
@@ -110,75 +166,73 @@ public class AttendanceDBContext extends DBContext<Attendance> {
     }
 
     @Override
-public ArrayList<Attendance> list() {
-    ArrayList<Attendance> attendances = new ArrayList<>();
-    String sql = "SELECT a.aid, se.seid, e.eid, e.ename, sc.scid, sc.Date, sc.Shift, pl.plid, pc.plcid, \n"
-            + "       pl.plname, pc.pid, p.pname, se.Quantity AS AssignedQuantity, a.Quantity, a.Alpha \n"
-            + "FROM [Attendence] a\n"
-            + "JOIN [SchedualEmployee] se ON a.seid = se.seid\n"
-            + "JOIN Employee e ON se.eid = e.eid\n"
-            + "JOIN [SchedualCampaign] sc ON se.scid = sc.scid\n"
-            + "JOIN PlanCampain pc ON sc.plcid = pc.plcid\n"
-            + "JOIN [Plan] pl ON pc.plid = pl.plid\n"
-            + "JOIN Product p ON pc.pid = p.pid \n"
-            + "ORDER BY sc.Date ASC;";
+    public ArrayList<Attendance> list() {
+        ArrayList<Attendance> attendances = new ArrayList<>();
+        String sql = "SELECT a.aid, se.seid, e.eid, e.ename, sc.scid, sc.Date, sc.Shift, pl.plid, pc.plcid, \n"
+                + "       pl.plname, pc.pid, p.pname, se.Quantity AS AssignedQuantity, a.Quantity, a.Alpha \n"
+                + "FROM [Attendence] a\n"
+                + "JOIN [SchedualEmployee] se ON a.seid = se.seid\n"
+                + "JOIN Employee e ON se.eid = e.eid\n"
+                + "JOIN [SchedualCampaign] sc ON se.scid = sc.scid\n"
+                + "JOIN PlanCampain pc ON sc.plcid = pc.plcid\n"
+                + "JOIN [Plan] pl ON pc.plid = pl.plid\n"
+                + "JOIN Product p ON pc.pid = p.pid \n"
+                + "ORDER BY sc.Date ASC;";
 
-    try (PreparedStatement stm = connection.prepareStatement(sql);
-         ResultSet rs = stm.executeQuery()) {
-        while (rs.next()) {
-            // Tạo đối tượng Employee
-            Employee employee = new Employee();
-            employee.setId(rs.getInt("eid"));
-            employee.setName(rs.getString("ename"));
+        try (PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
+            while (rs.next()) {
+                // Tạo đối tượng Employee
+                Employee employee = new Employee();
+                employee.setId(rs.getInt("eid"));
+                employee.setName(rs.getString("ename"));
 
-            // Tạo đối tượng ScheduleCampaign
-            ScheduleCampain scheduleCampain = new ScheduleCampain();
-            scheduleCampain.setId(rs.getInt("scid"));
-            scheduleCampain.setDate(rs.getDate("Date"));
-            scheduleCampain.setShift(rs.getInt("Shift"));
+                // Tạo đối tượng ScheduleCampaign
+                ScheduleCampain scheduleCampain = new ScheduleCampain();
+                scheduleCampain.setId(rs.getInt("scid"));
+                scheduleCampain.setDate(rs.getDate("Date"));
+                scheduleCampain.setShift(rs.getInt("Shift"));
 
-            // Tạo đối tượng Plan
-            Plan plan = new Plan();
-            plan.setId(rs.getInt("plid"));
-            plan.setName(rs.getString("plname"));
+                // Tạo đối tượng Plan
+                Plan plan = new Plan();
+                plan.setId(rs.getInt("plid"));
+                plan.setName(rs.getString("plname"));
 
-            // Tạo đối tượng Product
-            Product product = new Product();
-            product.setId(rs.getInt("pid"));
-            product.setName(rs.getString("pname"));
+                // Tạo đối tượng Product
+                Product product = new Product();
+                product.setId(rs.getInt("pid"));
+                product.setName(rs.getString("pname"));
 
-            // Tạo đối tượng PlanCampain và gán các giá trị phù hợp
-            PlanCampain planCampain = new PlanCampain();
-            planCampain.setId(rs.getInt("plcid"));
-            planCampain.setPlan(plan);
-            planCampain.setProduct(product);
+                // Tạo đối tượng PlanCampain và gán các giá trị phù hợp
+                PlanCampain planCampain = new PlanCampain();
+                planCampain.setId(rs.getInt("plcid"));
+                planCampain.setPlan(plan);
+                planCampain.setProduct(product);
 
-            // Gán PlanCampain vào ScheduleCampaign
-            scheduleCampain.setPlancampain(planCampain);
+                // Gán PlanCampain vào ScheduleCampaign
+                scheduleCampain.setPlancampain(planCampain);
 
-            // Tạo đối tượng ScheduleEmployee
-            ScheduleEmployee scheduleEmployee = new ScheduleEmployee();
-            scheduleEmployee.setId(rs.getInt("seid"));
-            scheduleEmployee.setQuantity(rs.getInt("AssignedQuantity"));
-            scheduleEmployee.setEmployee(employee);
-            scheduleEmployee.setSchedulecampain(scheduleCampain);
+                // Tạo đối tượng ScheduleEmployee
+                ScheduleEmployee scheduleEmployee = new ScheduleEmployee();
+                scheduleEmployee.setId(rs.getInt("seid"));
+                scheduleEmployee.setQuantity(rs.getInt("AssignedQuantity"));
+                scheduleEmployee.setEmployee(employee);
+                scheduleEmployee.setSchedulecampain(scheduleCampain);
 
-            // Tạo đối tượng Attendance
-            Attendance attendance = new Attendance();
-            attendance.setId(rs.getInt("aid"));
-            attendance.setScheduleEmployee(scheduleEmployee); // Tham chiếu đến ScheduleEmployee
-            attendance.setQuantity(rs.getInt("Quantity"));
-            attendance.setAlpha(rs.getDouble("Alpha"));
+                // Tạo đối tượng Attendance
+                Attendance attendance = new Attendance();
+                attendance.setId(rs.getInt("aid"));
+                attendance.setScheduleEmployee(scheduleEmployee); // Tham chiếu đến ScheduleEmployee
+                attendance.setQuantity(rs.getInt("Quantity"));
+                attendance.setAlpha(rs.getDouble("Alpha"));
 
-            // Thêm vào danh sách
-            attendances.add(attendance);
+                // Thêm vào danh sách
+                attendances.add(attendance);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-    } catch (SQLException ex) {
-        ex.printStackTrace();
+        return attendances;
     }
-    return attendances;
-}
-
 
     @Override
     public Attendance get(int id) {

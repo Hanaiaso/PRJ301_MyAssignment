@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class Employee {
     private int id;
     private String name;
+    private int additionalBonus;
     private boolean gender;
     private String address;
     private Date dob;
@@ -19,6 +20,14 @@ public class Employee {
     private java.util.Date updatedtime; 
     private Department dept;
     private ArrayList<Attendance> attendances = new ArrayList<>();
+
+    public int getAdditionalBonus() {
+        return additionalBonus;
+    }
+
+    public void setAdditionalBonus(int additionalBonus) {
+        this.additionalBonus = additionalBonus;
+    }
 
     // Getter and Setter for Attendances
     public ArrayList<Attendance> getAttendances() {

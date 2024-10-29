@@ -160,6 +160,10 @@
         <servlet-name>RoleDeleteController</servlet-name>
         <servlet-class>Role.Controller.RoleDeleteController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>BonusCalculationController</servlet-name>
+        <servlet-class>Employee.Controller.BonusCalculationController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -319,5 +323,9 @@
     <servlet-mapping>
         <servlet-name>RoleDeleteController</servlet-name>
         <url-pattern>/role/delete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BonusCalculationController</servlet-name>
+        <url-pattern>/employee/bonus</url-pattern>
     </servlet-mapping>
 </web-app>

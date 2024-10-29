@@ -6,13 +6,24 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Role and Features List</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script>
-        function confirmDelete(roleId) {
-            if (confirm("Are you sure you want to delete this role?")) {
-                window.location.href = 'delete?id=' + roleId;
+            function confirmDelete(roleId) {
+                if (confirm("Are you sure you want to delete this role?")) {
+                    window.location.href = 'delete?id=' + roleId;
+                }
             }
-        }
-    </script>
+
+            // JavaScript function to filter the table rows based on user input
+            $(document).ready(function () {
+                $("#searchInput").on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+                    $("#roleTable tbody tr").filter(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    });
+                });
+            });
+        </script>
     </head>
     <body>
         <div class="container">
@@ -21,7 +32,13 @@
             <!-- Button to add a new role -->
             <a href="create" class="btn btn-success mb-3">Add New Role</a>
 
-            <table class="table table-bordered table-striped">
+            <!-- Search bar -->
+            <div class="form-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search for roles or features...">
+            </div>
+
+            <!-- Role and Features Table -->
+            <table id="roleTable" class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>Role ID</th>
