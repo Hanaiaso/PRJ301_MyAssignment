@@ -1,4 +1,5 @@
 package Schedule.Controller;
+
 import Plan.Entity.Plan;
 import Plan.Entity.PlanCampain;
 import Schedule.Entity.ScheduleCampain;
@@ -15,7 +16,9 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 public class ScheduleCampainCreateController extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -38,22 +41,23 @@ public class ScheduleCampainCreateController extends HttpServlet {
         if (scheduleCreated) {
             request.setAttribute("message", "Lịch đã được tạo cho chiến dịch này.");
             request.getRequestDispatcher("../view/schedule/error.jsp").forward(request, response);
-            return; 
+            return;
         }
-        LocalDate startDate = plan.getStart().toLocalDate(); 
+        LocalDate startDate = plan.getStart().toLocalDate();
         LocalDate endDate = plan.getEnd().toLocalDate();
         List<LocalDate> dates = new ArrayList<>();
         while (!startDate.isAfter(endDate)) {
             dates.add(startDate);
-            startDate = startDate.plusDays(1); 
+            startDate = startDate.plusDays(1);
         }
         request.setAttribute("plan", plan);
         request.setAttribute("planCampain", planCampain);
-        request.setAttribute("productName", planCampain.getProduct().getName()); 
+        request.setAttribute("productName", planCampain.getProduct().getName());
         request.setAttribute("quantity", planCampain.getQuantity());
-        request.setAttribute("dates", dates); 
+        request.setAttribute("dates", dates);
         request.getRequestDispatcher("../view/schedule/create.jsp").forward(request, response);
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -62,24 +66,24 @@ public class ScheduleCampainCreateController extends HttpServlet {
         PlanCampain planCampain = planCampainDB.get(plcid);
         ScheduleCampainDBContext scDB = new ScheduleCampainDBContext();
         int totalQuantity = planCampain.getQuantity();
-        int totalInputQuantity = 0; 
+        int totalInputQuantity = 0;
         String[] dates = request.getParameterValues("date");
         for (String date : dates) {
             for (int shift = 1; shift <= 3; shift++) {
                 String quantityShift = request.getParameter("quantity" + date + "Shift" + shift);
                 if (quantityShift != null && !quantityShift.isEmpty()) {
                     int quantity = Integer.parseInt(quantityShift);
-                    totalInputQuantity += quantity; 
+                    totalInputQuantity += quantity;
                     if (totalInputQuantity > totalQuantity) {
                         request.setAttribute("error", "Tổng số lượng đã vượt quá giới hạn cho phép (" + totalQuantity + ")");
                         request.getRequestDispatcher("../view/schedule/create.jsp").forward(request, response);
-                        return; 
+                        return;
                     }
                     ScheduleCampain scheduleCampain = new ScheduleCampain();
-                    scheduleCampain.setPlancampain(planCampain); 
+                    scheduleCampain.setPlancampain(planCampain);
                     scheduleCampain.setDate(Date.valueOf(date));
-                    scheduleCampain.setShift(shift); 
-                    scheduleCampain.setQuantity(quantity); 
+                    scheduleCampain.setShift(shift);
+                    scheduleCampain.setQuantity(quantity);
                     scDB.insert(scheduleCampain);
                 }
             }

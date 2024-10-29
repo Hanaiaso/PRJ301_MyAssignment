@@ -16,12 +16,28 @@
             function updateDepartment(departmentId) {
                 window.location.href = 'update?id=' + departmentId;
             }
+            
+            $(document).ready(function () {
+                // Tìm kiếm trong bảng
+                $("#searchInput").on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+                    $("#departmentTable tbody tr").filter(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    });
+                });
+            });
         </script>
     </head>
     <body>
         <div class="container">
             <h1>Department List</h1>
-            <table border="1" class="table table-striped">
+
+            <!-- Thanh tìm kiếm -->
+            <div class="form-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search for departments...">
+            </div>
+
+            <table border="1" class="table table-striped" id="departmentTable">
                 <thead>
                     <tr>
                         <th>Department ID</th>

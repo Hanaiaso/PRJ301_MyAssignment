@@ -61,7 +61,7 @@ public class UserDBContext extends DBContext<User> {
                 + "	INNER JOIN [Role] r ON r.rid = ur.rid\n"
                 + "	INNER JOIN RoleFeature rf ON r.rid = rf.rid\n"
                 + "	INNER JOIN Feature f ON f.fid = rf.fid\n"
-                + "WHERE u.username = ?\n"
+                + "WHERE r.isWork = 1 AND u.username = ?\n"
                 + "ORDER BY r.rid, f.fid ASC";
         PreparedStatement stm = null;
         ArrayList<Role> roles = new ArrayList<>();

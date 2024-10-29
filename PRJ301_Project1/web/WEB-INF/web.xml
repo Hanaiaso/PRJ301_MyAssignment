@@ -144,6 +144,22 @@
         <servlet-name>DepartmentUpdateController</servlet-name>
         <servlet-class>Department.Controller.DepartmentUpdateController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RoleFeatureController</servlet-name>
+        <servlet-class>Role.Controller.RoleFeatureController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RoleCreateController</servlet-name>
+        <servlet-class>Role.Controller.RoleCreateController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RoleUpdateController</servlet-name>
+        <servlet-class>Role.Controller.RoleUpdateController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RoleDeleteController</servlet-name>
+        <servlet-class>Role.Controller.RoleDeleteController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -287,5 +303,21 @@
     <servlet-mapping>
         <servlet-name>DepartmentUpdateController</servlet-name>
         <url-pattern>/department/update</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RoleFeatureController</servlet-name>
+        <url-pattern>/role/list</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RoleCreateController</servlet-name>
+        <url-pattern>/role/create</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RoleUpdateController</servlet-name>
+        <url-pattern>/role/update</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RoleDeleteController</servlet-name>
+        <url-pattern>/role/delete</url-pattern>
     </servlet-mapping>
 </web-app>
