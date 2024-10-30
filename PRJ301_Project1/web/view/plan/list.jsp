@@ -52,7 +52,7 @@
                                             <form id="frmRemoveEmployee${plan.id}" action="delete" method="POST" style="display:none;">
                                                 <input type="hidden" name="id" value="${plan.id}"/>
                                             </form> | 
-                                            <a href="../schedulecampain/list?plcid=${campaign.id}&plid=${plan.id}">Chi tiết</a>
+                                            
                                         </td>
                                         <td>
 

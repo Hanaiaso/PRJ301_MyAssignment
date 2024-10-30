@@ -164,6 +164,10 @@
         <servlet-name>BonusCalculationController</servlet-name>
         <servlet-class>Employee.Controller.BonusCalculationController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ScheduleCampainUpdateController</servlet-name>
+        <servlet-class>Schedule.Controller.ScheduleCampainUpdateController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -327,5 +331,9 @@
     <servlet-mapping>
         <servlet-name>BonusCalculationController</servlet-name>
         <url-pattern>/employee/bonus</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ScheduleCampainUpdateController</servlet-name>
+        <url-pattern>/schedulecampain/update</url-pattern>
     </servlet-mapping>
 </web-app>

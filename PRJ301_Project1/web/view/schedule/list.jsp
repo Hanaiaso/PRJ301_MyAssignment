@@ -36,7 +36,7 @@
                         <th>Date</th>
                         <th>Shift</th>
                         <th>Quantity</th>
-                        <th></th>
+                       
                     </tr>
                 </thead>
                 <tbody>
@@ -49,10 +49,7 @@
                             <td>${schedule.date}</td>
                             <td>${schedule.shift}</td>
                             <td>${schedule.quantity}</td>
-                               <td>
-                                    <!-- Link đến chức năng phân công nhân viên cho kế hoạch -->
-                                    <a href="../scheduleemployee/create?plcid=${schedule.plancampain.id}">Phân công nhân viên</a>
-                                </td>
+                               
                         </tr>
                     </c:forEach>
                 </tbody>
