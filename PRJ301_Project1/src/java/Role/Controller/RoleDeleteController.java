@@ -24,17 +24,22 @@ public class RoleDeleteController extends HttpServlet {
             throws ServletException, IOException {
         String roleIdParam = request.getParameter("id");
         if (roleIdParam != null && !roleIdParam.isEmpty()) {
-            int roleId = Integer.parseInt(roleIdParam);
+            try {
+                int roleId = Integer.parseInt(roleIdParam);
+                RoleDBContext roleDB = new RoleDBContext();
+                Role role = roleDB.get(roleId);
 
-            RoleDBContext roleDB = new RoleDBContext();
-            Role role = roleDB.get(roleId);
+                if (role != null) {
+                    roleDB.delete(role);
+                }
 
-            if (role != null) {
-                roleDB.delete(role);
+                // Redirect to the list page after deletion
+                response.sendRedirect("list");
+            } catch (NumberFormatException e) {
+                response.getWriter().println("Invalid role ID format.");
             }
+        } else {
+            response.getWriter().println("Role ID is required for deletion.");
         }
-
-        // Redirect to the list page after deletion
-        response.sendRedirect("list");
     }
 }

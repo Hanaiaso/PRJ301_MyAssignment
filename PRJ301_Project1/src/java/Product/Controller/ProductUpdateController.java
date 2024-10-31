@@ -41,7 +41,7 @@ public class ProductUpdateController extends HttpServlet {
             ProductDBContext pdb = new ProductDBContext();
             ArrayList<Product> p = pdb.list();
             request.setAttribute("plist", p);
-            request.getRequestDispatcher("/view/product/product_delete.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/product/product_update.jsp").forward(request, response);
         }
     }
 

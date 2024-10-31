@@ -186,11 +186,11 @@ public class UserDBContext extends DBContext<User> {
 
     @Override
     public ArrayList<User> list() {
-        String sql = "SELECT u.[username], [password], [displayname], [isWork], r.rid, r.rname "
-                + "FROM [User] u "
-                + "LEFT JOIN [UserRole] ur ON u.username = ur.username "
-                + "LEFT JOIN [Role] r ON r.rid = ur.rid "
-                + "WHERE isWork = 1";
+        String sql = "SELECT u.[username], [password], [displayname], u.[isWork], r.rid, r.rname \n"
+                + "                FROM [User] u \n"
+                + "                LEFT JOIN [UserRole] ur ON u.username = ur.username \n"
+                + "                LEFT JOIN [Role] r ON r.rid = ur.rid \n"
+                + "                WHERE u.isWork = 1";
         PreparedStatement stm = null;
         ArrayList<User> users = new ArrayList<>();
 
@@ -240,11 +240,11 @@ public class UserDBContext extends DBContext<User> {
     }
 
     public User get(String username) {
-        String sql = "SELECT u.[username], [password], [displayname], [isWork], r.rid, r.rname "
-                + "FROM [User] u "
-                + "LEFT JOIN [UserRole] ur ON u.username = ur.username "
-                + "LEFT JOIN [Role] r ON r.rid = ur.rid "
-                + "WHERE u.[username] = ?";
+        String sql = "SELECT u.[username], [password], [displayname], u.[isWork], r.rid, r.rname \n"
+                + "                FROM [User] u \n"
+                + "                LEFT JOIN [UserRole] ur ON u.username = ur.username \n"
+                + "                LEFT JOIN [Role] r ON r.rid = ur.rid \n"
+                + "                WHERE u.[username] = ?";
         PreparedStatement stm = null;
         User user = null;
 

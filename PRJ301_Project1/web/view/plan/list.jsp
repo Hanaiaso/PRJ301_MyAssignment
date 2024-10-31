@@ -16,6 +16,7 @@
     </head>
     <body>
         <h1>Danh sách các kế hoạch</h1>
+        <a href="create"><button type="button" class="btn btn-primary mb-4">Create Plan</button></a>
         <table border="1" cellpadding="5" cellspacing="0">
             <thead>
                 <tr>

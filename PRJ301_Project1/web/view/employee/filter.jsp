@@ -19,7 +19,9 @@
     <body>
         <a href="create">
                 <button>Add Employee</button>
-        </a><br>
+        </a>
+        <a href="deleteall"><button type="button" class="btn btn-danger mb-2">Delete All Employees</button></a>
+        <a href="list"><button type="button" class="btn btn-primary mb-2">Employee's List</button></a><br>
         <form action="filter" method="GET">
             Id: <input type="text" name="id" value="${param.id}"/> <br/>
             Name: <input type="text" name="name" value="${param.name}"/> <br/>
