@@ -1,11 +1,12 @@
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <meta charset="UTF-8">
+        <title>Employee Management</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script>
             function confirmDelete() {
                 const checkboxes = document.querySelectorAll('input[name="eids"]:checked');
@@ -14,51 +15,68 @@
                     return false; 
                 }
                 var result = confirm("Are you sure you want to delete the selected employees?");
-                if (result) {
-                    return true; 
-                } else {
-                    return false; 
-                }
+                return result;
             }
+
+            $(document).ready(function () {
+                // Tìm kiếm nhân viên theo tên
+                $("#searchInput").on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+                    $("#employeeTable tbody tr").filter(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    });
+                });
+            });
         </script>
     </head>
     <body>
-        <form id="frmRemoveEmployee" action="deleteall" method="post" onsubmit="return confirmDelete();">
-            <table border="1">
-                <thead>
-                    <tr>
-                        <td>Select</td> 
-                        <td>Id</td>
-                        <td>Name</td>
-                        <td>Gender</td>
-                        <td>Dob</td>
-                        <td>Address</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach items="${requestScope.e}" var="e">
+        <div class="container mt-5">
+            <h3 class="mb-4 text-center">Employee Management</h3>
+
+            <!-- Search Bar -->
+            <div class="form-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search for employees...">
+            </div>
+
+            <form id="frmRemoveEmployee" action="deleteall" method="post" onsubmit="return confirmDelete();">
+                <table class="table table-bordered table-striped" id="employeeTable">
+                    <thead class="thead-dark">
                         <tr>
-                            <td>
-                                <input type="checkbox" name="eids" value="${e.id}">
-                            </td>
-                            <td>${e.id}</td>
-                            <td>${e.name}</td>
-                            <td>
-                                <c:if test="${e.gender}">
-                                    Male
-                                </c:if>
-                                <c:if test="${!e.gender}">
-                                    Female
-                                </c:if>
-                            </td>
-                            <td>${e.dob}</td>
-                            <td>${e.address}</td>
+                            <th>Select</th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Date of Birth</th>
+                            <th>Address</th>
                         </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
-            <br>
-            <input type="submit" value="Delete Selected Employees"/>
-        </form>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${requestScope.e}" var="e">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="eids" value="${e.id}">
+                                </td>
+                                <td>${e.id}</td>
+                                <td>${e.name}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${e.gender}">
+                                            Male
+                                        </c:when>
+                                        <c:otherwise>
+                                            Female
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>${e.dob}</td>
+                                <td>${e.address}</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+                <br/>
+                <button type="submit" class="btn btn-danger">Delete Selected Employees</button>
+            </form>
+        </div>
     </body>
 </html>

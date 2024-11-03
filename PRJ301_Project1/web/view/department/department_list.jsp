@@ -62,15 +62,13 @@
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
+        <br/>
+        <br/>
         <h1>Company Name</h1>
-        <a href="../main" onclick="toggleSidebar()"><img src="logo.png" alt="Company Logo"></a>
-        <a href="../employee/list">Employee's List</a>
-        <a href="../employee/filter">Employee's Filter</a>
-        <a href="../employee/create">Create Employee</a>
-        <a href="../employee/deleteall">Delete All Employees</a>
+        <a href="../main" onclick="toggleSidebar()"><img src="logo.png" alt="Company Logo"></a>    
+        <a href="../employee/filter">Employee</a>
         <a href="../employee/bonus">Bonus</a>
-        <a href="../plan/create">Create Plan</a>
-        <a href="../plan/list">List Plans</a>
+        <a href="../plan/list">Plans</a>
         <a href="../product/list">Product</a>
         <a href="../plan/select">Assign Employee to Plan</a>
         <a href="../scheduleemployee/list">Assigned Employee List</a>

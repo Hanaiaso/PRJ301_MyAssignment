@@ -1,4 +1,5 @@
 package Plan.Controller;
+
 import Employee.Entity.Department;
 import Plan.Entity.Plan;
 import Plan.Entity.PlanCampain;
@@ -14,7 +15,9 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+
 public class PlanUpdateController extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -38,6 +41,7 @@ public class PlanUpdateController extends HttpServlet {
             response.sendRedirect("list");
         }
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

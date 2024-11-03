@@ -129,7 +129,7 @@
                 <div class="dropdown-item"><strong>WELCOME</strong> </div>
                 <div class="dropdown-item"><strong>Username: </strong> ${requestScope.name}</div>
                 <div class="dropdown-item"><strong>Displayname: </strong> ${requestScope.dname}</div>
-                <a href="logout"><div class="dropdown-item"><button type="button" class="btn btn-danger">Logout</button></div>
+                <a href="logout"><div class="dropdown-item"><button type="button" >Logout</button></div></a>
             </div>
         </div>
         

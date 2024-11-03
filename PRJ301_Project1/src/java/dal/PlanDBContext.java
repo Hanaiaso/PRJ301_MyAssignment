@@ -1,4 +1,5 @@
 package dal;
+
 import Employee.Entity.Department;
 import Plan.Entity.Plan;
 import Plan.Entity.PlanCampain;
@@ -9,7 +10,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 public class PlanDBContext extends DBContext<Plan> {
+
     public ArrayList<Plan> getPlans() {
         ArrayList<Plan> plans = new ArrayList<>();
         String sql = "SELECT * FROM [Plan] WHERE isDone = 0";
@@ -64,26 +67,47 @@ public class PlanDBContext extends DBContext<Plan> {
             }
         } finally {
             try {
-                connection.setAutoCommit(true); 
+                connection.setAutoCommit(true);
             } catch (SQLException ex) {
                 Logger.getLogger(PlanDBContext.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
+
     @Override
     public void update(Plan plan) {
         PreparedStatement stmtUpdatePlan = null;
         PreparedStatement stmtUpdateCampain = null;
         try {
             connection.setAutoCommit(false);
-            String sqlUpdatePlan = "UPDATE [Plan] SET [plname] = ?, [StartDate] = ?, [EndDate] = ?, [did] = ? WHERE [plid] = ? AND [isDone = 0]";
+
+            // **Xóa các dữ liệu liên quan trong ScheduleCampain, ScheduleEmployee, và Attendance**
+            String sqlDeleteScheduleEmployee = "DELETE FROM [SchedualEmployee] WHERE scid IN (SELECT scid FROM [SchedualCampaign] WHERE plcid IN (SELECT plcid FROM [PlanCampain] WHERE plid = ?))";
+            String sqlDeleteAttendance = "DELETE FROM [Attendence] WHERE seid IN (SELECT seid FROM [SchedualEmployee] WHERE scid IN (SELECT scid FROM [SchedualCampaign] WHERE plcid IN (SELECT plcid FROM [PlanCampain] WHERE plid = ?)))";
+            String sqlDeleteScheduleCampain = "DELETE FROM [SchedualCampaign] WHERE plcid IN (SELECT plcid FROM [PlanCampain] WHERE plid = ?)";
+
+            try (PreparedStatement stmtDeleteAttendance = connection.prepareStatement(sqlDeleteAttendance); PreparedStatement stmtDeleteScheduleEmployee = connection.prepareStatement(sqlDeleteScheduleEmployee); PreparedStatement stmtDeleteScheduleCampain = connection.prepareStatement(sqlDeleteScheduleCampain)) {
+                stmtDeleteAttendance.setInt(1, plan.getId());
+                stmtDeleteAttendance.executeUpdate();
+
+                stmtDeleteScheduleEmployee.setInt(1, plan.getId());
+                stmtDeleteScheduleEmployee.executeUpdate();
+
+                stmtDeleteScheduleCampain.setInt(1, plan.getId());
+                stmtDeleteScheduleCampain.executeUpdate();
+            }
+
+            // **Cập nhật Plan**
+            String sqlUpdatePlan = "UPDATE [Plan] SET [plname] = ?, [StartDate] = ?, [EndDate] = ?, [did] = ? WHERE [plid] = ? AND [isDone] = 0";
             stmtUpdatePlan = connection.prepareStatement(sqlUpdatePlan);
             stmtUpdatePlan.setString(1, plan.getName());
             stmtUpdatePlan.setDate(2, plan.getStart());
             stmtUpdatePlan.setDate(3, plan.getEnd());
             stmtUpdatePlan.setInt(4, plan.getDept().getId());
             stmtUpdatePlan.setInt(5, plan.getId());
-            stmtUpdatePlan = connection.prepareStatement(sqlUpdatePlan);
+            stmtUpdatePlan.executeUpdate();
+
+            // **Cập nhật PlanCampain**
             String sqlUpdateCampain = "UPDATE [PlanCampain] SET [Quantity] = ?, [Estimate] = ? WHERE [plcid] = ?";
             stmtUpdateCampain = connection.prepareStatement(sqlUpdateCampain);
             for (PlanCampain campain : plan.getCampains()) {
@@ -92,6 +116,7 @@ public class PlanDBContext extends DBContext<Plan> {
                 stmtUpdateCampain.setInt(3, campain.getId());
                 stmtUpdateCampain.executeUpdate();
             }
+
             connection.commit();
         } catch (SQLException ex) {
             try {
@@ -114,18 +139,20 @@ public class PlanDBContext extends DBContext<Plan> {
             }
         }
     }
+
     @Override
     public void delete(Plan entity) {
         try {
             PreparedStatement stmtUpdatePlan = null;
             String sqlUpdatePlan = "UPDATE [Plan] SET [isDone] = 1 WHERE [plid] = ?";
             stmtUpdatePlan = connection.prepareStatement(sqlUpdatePlan);
-            stmtUpdatePlan.setInt(1, entity.getId());            
-            stmtUpdatePlan.executeUpdate();          
+            stmtUpdatePlan.setInt(1, entity.getId());
+            stmtUpdatePlan.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(PlanDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-    }   
+        }
+    }
+
     @Override
     public ArrayList<Plan> list() {
         ArrayList<Plan> plans = new ArrayList<>();
@@ -134,9 +161,9 @@ public class PlanDBContext extends DBContext<Plan> {
                 + "FROM [Plan] p "
                 + "INNER JOIN [Department] d ON p.[did] = d.[did] "
                 + "LEFT JOIN PlanCampain pc ON p.plid = pc.plid "
-                + "LEFT JOIN [Product] pr ON pr.pid = pc.pid WHERE [isDone] = 0"; 
+                + "LEFT JOIN [Product] pr ON pr.pid = pc.pid WHERE [isDone] = 0";
         try (PreparedStatement stm = connection.prepareStatement(sql); ResultSet rs = stm.executeQuery()) {
-            Plan currentPlan = null; 
+            Plan currentPlan = null;
             while (rs.next()) {
                 int planId = rs.getInt("plid");
                 if (currentPlan == null || currentPlan.getId() != planId) {
@@ -150,7 +177,7 @@ public class PlanDBContext extends DBContext<Plan> {
                     d.setName(rs.getString("dname"));
                     currentPlan.setDept(d);
                     currentPlan.setCampains(new ArrayList<>());
-                    plans.add(currentPlan); 
+                    plans.add(currentPlan);
                 }
                 if (rs.getInt("plcid") > 0) {
                     PlanCampain pc = new PlanCampain();
@@ -169,6 +196,7 @@ public class PlanDBContext extends DBContext<Plan> {
         }
         return plans;
     }
+
     @Override
     public Plan get(int id) {
         Plan plan = null;
@@ -177,7 +205,7 @@ public class PlanDBContext extends DBContext<Plan> {
                 + "INNER JOIN [Department] d ON p.[did] = d.[did] "
                 + "WHERE p.[plid] = ? AND isDone = 0";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
-            stm.setInt(1, id); 
+            stm.setInt(1, id);
             try (ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
                     plan = new Plan();
@@ -195,6 +223,6 @@ public class PlanDBContext extends DBContext<Plan> {
         } catch (SQLException ex) {
             Logger.getLogger(PlanDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return plan; 
+        return plan;
     }
 }

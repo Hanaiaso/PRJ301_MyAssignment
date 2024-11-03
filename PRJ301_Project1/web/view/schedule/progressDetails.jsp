@@ -65,7 +65,7 @@
     <div class="sidebar" id="sidebar">
         <br>
         <br>
-        <br>
+    
         
         <h1>Company Name</h1>
         <a href="main" onclick="toggleSidebar()"><img src="logo.png" alt="Company Logo"></a>

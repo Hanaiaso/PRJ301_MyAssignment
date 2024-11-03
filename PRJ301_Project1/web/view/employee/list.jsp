@@ -3,34 +3,63 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <meta charset="UTF-8">
+        <title>Employee List</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // Tìm kiếm nhân viên theo từ khóa
+                $("#searchInput").on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+                    $("#employeeTable tbody tr").filter(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    });
+                });
+            });
+        </script>
     </head>
     <body>
-        <table border="1px">
-            <tr>
-                <td>Id</td>
-                <td>Name</td>
-                <td>Gender</td>
-                <td>Dob</td>
-                <td>Address</td>               
-            </tr>
-            <c:forEach items="${requestScope.emps}" var="e">
-             <tr>
-                <td>${e.id}</td>
-                <td>${e.name}</td>
-                <td>
-                    <c:if test="${e.gender}">
-                        Male
-                    </c:if>
-                    <c:if test="${!e.gender}">
-                        Female
-                    </c:if>                   
-                </td>
-                <td>${e.dob}</td>
-                <td>${e.address}</td>                
-            </tr>                  
-            </c:forEach>          
-        </table>
+        <div class="container mt-5">
+            <h3 class="mb-4 text-center">Employee List</h3>
+
+            <!-- Search Bar -->
+            <div class="form-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search for employees...">
+            </div>
+
+            <!-- Employee Table -->
+            <table class="table table-bordered table-striped" id="employeeTable">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Date of Birth</th>
+                        <th>Address</th>               
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach items="${requestScope.emps}" var="e">
+                        <tr>
+                            <td>${e.id}</td>
+                            <td>${e.name}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${e.gender}">
+                                        Male
+                                    </c:when>
+                                    <c:otherwise>
+                                        Female
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>${e.dob}</td>
+                            <td>${e.address}</td>                
+                        </tr>                  
+                    </c:forEach>          
+                </tbody>
+            </table>
+        </div>
     </body>
 </html>

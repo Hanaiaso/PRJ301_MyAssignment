@@ -4,32 +4,19 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Delete Product</title>
+        <title>Xóa Sản Phẩm</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    </head>
-    <body>
-        <h3>Delete a product</h3>
-
-        <!-- Dropdown để chọn sản phẩm muốn xóa -->
-        <label>Chọn sản phẩm bạn muốn xóa:</label>
-        <select id="productSelect">
-            <option value="">-- Select a Product --</option>
-            <c:forEach items="${requestScope.plist}" var="pl">  
-                <option value="${pl.id}">${pl.name}</option>
-            </c:forEach>
-        </select>
-
-        <!-- Form để hiển thị thông tin sản phẩm (ban đầu ẩn) -->
-        <div id="deleteForm" style="display:none; margin-top: 20px;">
-            <p>ID sản phẩm: <span id="productId"></span></p>
-            <p>Tên sản phẩm: <span id="productName"></span></p>
-            <button type="button" id="deleteButton">Delete</button>
-        </div>
-        <br/>
-        <a href="javascript:history.back()">Quay lại</a>
-        
         <script>
             $(document).ready(function () {
+                // Tìm kiếm sản phẩm trong dropdown
+                $("#searchInput").on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+                    $("#productSelect option").filter(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    });
+                });
+
                 // Khi chọn sản phẩm trong dropdown
                 $("#productSelect").on("change", function () {
                     var productId = $(this).val();
@@ -69,7 +56,7 @@
                             contentType: 'application/json',
                             data: JSON.stringify({ id: productId }),
                             success: function () {
-                                alert('Product deleted successfully!');
+                                alert('Sản phẩm đã được xóa thành công!');
                                 location.reload(); // Reload trang để cập nhật danh sách sản phẩm
                             },
                             error: function (xhr, status, error) {
@@ -80,5 +67,32 @@
                 });
             });
         </script>
+    </head>
+    <body>
+        <div class="container mt-5">
+            <h3 class="mb-4">Xóa sản phẩm</h3>
+
+            
+
+            <!-- Dropdown để chọn sản phẩm muốn xóa -->
+            <div class="form-group">
+                <label>Chọn sản phẩm bạn muốn xóa:</label>
+                <select id="productSelect" class="form-control">
+                    <option value="">-- Chọn sản phẩm --</option>
+                    <c:forEach items="${requestScope.plist}" var="pl">  
+                        <option value="${pl.id}">${pl.name}</option>
+                    </c:forEach>
+                </select>
+            </div>
+
+            <!-- Form để hiển thị thông tin sản phẩm (ban đầu ẩn) -->
+            <div id="deleteForm" style="display:none; margin-top: 20px;">
+                <p>ID sản phẩm: <span id="productId"></span></p>
+                <p>Tên sản phẩm: <span id="productName"></span></p>
+                <button type="button" id="deleteButton" class="btn btn-danger">Xóa sản phẩm</button>
+            </div>
+            <br/>
+            <a href="javascript:history.back()" class="btn btn-secondary mt-3">Quay lại</a>
+        </div>
     </body>
 </html>

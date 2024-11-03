@@ -9,7 +9,7 @@ public class LogoutController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.getSession().setAttribute("account", null);
-        response.getWriter().println("logged out!");
+        response.sendRedirect("login");
     }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

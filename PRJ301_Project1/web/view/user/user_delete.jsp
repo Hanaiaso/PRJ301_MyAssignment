@@ -5,31 +5,36 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Delete User</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-    <h3>Delete User</h3>
+    <div class="container mt-5">
+        <h3 class="mb-4 text-center">Delete User</h3>
 
-    <!-- Dropdown để chọn người dùng muốn xóa -->
-    <label>Chọn người dùng bạn muốn xóa:</label>
-    <select id="userSelect">
-        <option value="">-- Select a User --</option>
-        <c:forEach items="${userList}" var="u">  
-            <option value="${u.username}">${u.displayname} (${u.username})</option>
-        </c:forEach>
-    </select>
+        <!-- Dropdown để chọn người dùng muốn xóa -->
+        <div class="form-group">
+            <label for="userSelect">Chọn người dùng bạn muốn xóa:</label>
+            <select id="userSelect" class="form-control">
+                <option value="">-- Select a User --</option>
+                <c:forEach items="${userList}" var="u">  
+                    <option value="${u.username}">${u.displayname} (${u.username})</option>
+                </c:forEach>
+            </select>
+        </div>
 
-    <!-- Form xác nhận xóa người dùng (ban đầu ẩn) -->
-    <div id="deleteForm" style="display:none; margin-top: 20px;">
-        <form id="deleteUserForm" method="POST">
-            <input type="hidden" id="username" name="username" readonly />
-            <p>Bạn có chắc chắn muốn xóa người dùng: <strong id="displayUser"></strong> không?</p>
-            <button type="button" id="deleteButton">Delete</button>
-            <button type="button" id="cancelButton">Cancel</button>
-        </form>
+        <!-- Form xác nhận xóa người dùng (ban đầu ẩn) -->
+        <div id="deleteForm" class="border p-4" style="display:none;">
+            <form id="deleteUserForm" method="POST">
+                <input type="hidden" id="username" name="username" readonly />
+                <p>Bạn có chắc chắn muốn xóa người dùng: <strong id="displayUser"></strong> không?</p>
+                <button type="button" id="deleteButton" class="btn btn-danger">Delete</button>
+                <button type="button" id="cancelButton" class="btn btn-secondary ml-2">Cancel</button>
+            </form>
+        </div>
+        <br/>
+        <a href="javascript:history.back()" class="btn btn-secondary mt-3">Quay lại</a>
     </div>
-    <br/>
-    <a href="javascript:history.back()">Quay lại</a>
 
     <script>
         $(document).ready(function () {

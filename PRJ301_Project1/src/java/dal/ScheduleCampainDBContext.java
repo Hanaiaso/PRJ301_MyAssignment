@@ -10,6 +10,42 @@ import java.sql.*;
 
 public class ScheduleCampainDBContext extends DBContext<ScheduleCampain> {
 
+    public int getTotalScheduledQuantity(int plcid) {
+        String sql = "SELECT Quantity FROM SchedualCampaign WHERE isWork = 1 AND plcid = ?";
+        int totalScheduledQuantity = 0;
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, plcid);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                totalScheduledQuantity += rs.getInt("Quantity");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return totalScheduledQuantity;
+    }
+
+    public ScheduleCampain getScheduleByDateAndShift(int plcid, Date date, int shift) {
+        String sql = "SELECT * FROM SchedualCampaign WHERE isWork = 1 AND plcid = ? AND Date = ? AND Shift = ?";
+        ScheduleCampain scheduleCampain = null;
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, plcid);
+            stm.setDate(2, date);
+            stm.setInt(3, shift);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                scheduleCampain = new ScheduleCampain();
+                scheduleCampain.setId(rs.getInt("scid"));
+                scheduleCampain.setDate(rs.getDate("Date"));
+                scheduleCampain.setShift(rs.getInt("Shift"));
+                scheduleCampain.setQuantity(rs.getInt("Quantity"));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return scheduleCampain;
+    }
+
     public ArrayList<ScheduleCampain> getSchedulesByPlanCampainId(int planCampainId) {
         ArrayList<ScheduleCampain> schedules = new ArrayList<>();
         String sql = "SELECT sc.scid, sc.plcid, sc.Date, sc.Shift, sc.Quantity, "
@@ -18,7 +54,7 @@ public class ScheduleCampainDBContext extends DBContext<ScheduleCampain> {
                 + "JOIN PlanCampain pc ON sc.plcid = pc.plcid "
                 + "JOIN Product p ON pc.pid = p.pid "
                 + "JOIN [Plan] pl ON pc.plid = pl.plid "
-                + "WHERE pl.isDone = 0 AND sc.plcid = ? "
+                + "WHERE pc.isWork = 1 AND  pl.isDone = 0 AND sc.plcid = ? "
                 + "ORDER BY sc.Date, sc.Shift";
 
         try {
@@ -63,7 +99,7 @@ public class ScheduleCampainDBContext extends DBContext<ScheduleCampain> {
     }
 
     public int getAssignedQuantity(int scid) {
-        String sql = "SELECT SUM(Quantity) AS totalAssigned FROM SchedualEmployee WHERE scid = ?";
+        String sql = "SELECT SUM(Quantity) AS totalAssigned FROM SchedualEmployee WHERE isWork = 1 AND scid = ?";
         int totalAssigned = 0;
         try {
             PreparedStatement stm = connection.prepareStatement(sql);
@@ -79,7 +115,7 @@ public class ScheduleCampainDBContext extends DBContext<ScheduleCampain> {
     }
 
     public boolean isScheduleCreated(int plcid) {
-        String sql = "SELECT COUNT(*) AS total FROM SchedualCampaign WHERE plcid = ?";
+        String sql = "SELECT COUNT(*) AS total FROM SchedualCampaign WHERE isWork = 1 AND plcid = ?";
         try {
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, plcid);
@@ -109,15 +145,27 @@ public class ScheduleCampainDBContext extends DBContext<ScheduleCampain> {
     }
 
     @Override
-    public void update(ScheduleCampain entity
-    ) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void update(ScheduleCampain entity) {
+        String sql = "UPDATE SchedualCampaign SET Quantity = ? WHERE scid = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, entity.getQuantity());
+            stm.setInt(2, entity.getId());
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
-
-    @Override
-    public void delete(ScheduleCampain entity
-    ) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    
+     
+   @Override
+    public void delete(ScheduleCampain entity) {
+        String sql = "UPDATE [SchedualCampaign] SET [isWork] = 0 WHERE [scid] = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setInt(1, entity.getId());
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+          
+        }
     }
 
     @Override
@@ -129,7 +177,7 @@ public class ScheduleCampainDBContext extends DBContext<ScheduleCampain> {
                 + "LEFT JOIN PlanCampain pc ON sc.plcid = pc.plcid "
                 + "LEFT JOIN Product p ON pc.pid = p.pid "
                 + "LEFT JOIN [Plan] pl ON pc.plid = pl.plid "
-                + "WHERE pl.isDOne = 0 "
+                + "WHERE pc.isWork = 1 AND pl.isDOne = 0 "
                 + "ORDER BY pc.plcid, sc.Date, sc.Shift";
         try {
             PreparedStatement stm = connection.prepareStatement(sql);
@@ -172,7 +220,7 @@ public class ScheduleCampainDBContext extends DBContext<ScheduleCampain> {
                 + "JOIN Product p ON pc.pid = p.pid "
                 + "JOIN [Plan] pl ON pc.plid = pl.plid "
                 + "JOIN [Department] d ON pl.did = d.did "
-                + "WHERE sc.scid = ?";
+                + "WHERE pc.isWork = 1 AND sc.scid = ?";
 
         try {
             PreparedStatement stm = connection.prepareStatement(sql);
