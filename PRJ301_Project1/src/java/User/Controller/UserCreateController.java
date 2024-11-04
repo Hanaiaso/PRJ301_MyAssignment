@@ -4,6 +4,7 @@
  */
 package User.Controller;
 
+import Login.Controller.BaseRBACCOntroller;
 import Login.Entity.Role;
 import Login.Entity.User;
 import com.google.gson.Gson;
@@ -22,27 +23,25 @@ import java.util.ArrayList;
  *
  * @author LEGION
  */
-public class UserCreateController extends HttpServlet {
+public class UserCreateController extends BaseRBACCOntroller {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
         // Lấy danh sách roles để hiển thị cho người dùng chọn
         RoleDBContext roleDB = new RoleDBContext();
         ArrayList<Role> roles = roleDB.list();
-        request.setAttribute("roles", roles);
+        req.setAttribute("roles", roles);
 
         // Chuyển tiếp đến JSP để nhập thông tin người dùng
-        request.getRequestDispatcher("/view/user/user_create.jsp").forward(request, response);
+        req.getRequestDispatcher("/view/user/user_create.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
         // Đọc JSON từ yêu cầu
         StringBuilder json = new StringBuilder();
         String line;
-        try (BufferedReader reader = request.getReader()) {
+        try (BufferedReader reader = req.getReader()) {
             while ((line = reader.readLine()) != null) {
                 json.append(line);
             }
@@ -57,11 +56,9 @@ public class UserCreateController extends HttpServlet {
         udb.insert(user);
 
         // Trả về phản hồi thành công
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().print("{\"status\": \"success\"}");
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().print("{\"status\": \"success\"}");
     }
-
-
 
 }

@@ -14,7 +14,8 @@ import java.util.List;
  * @author LEGION
  */
 public class Progress {
-   private Plan plan;
+
+    private Plan plan;
     private int totalProducts; // Tổng số sản phẩm đã giao
     private int completedProducts; // Tổng số sản phẩm đã hoàn thành
     private int remainingProducts; // Số sản phẩm còn lại
@@ -70,6 +71,4 @@ public class Progress {
         this.department = department;
     }
 
- 
-    
 }

@@ -25,7 +25,7 @@
                         $.ajax({
                             url: 'delete',
                             method: 'GET',
-                            data: { pid: productId },
+                            data: {pid: productId},
                             dataType: 'json',
                             success: function (data) {
                                 // Hiển thị form và điền thông tin vào
@@ -54,7 +54,7 @@
                             url: 'delete',
                             method: 'POST',
                             contentType: 'application/json',
-                            data: JSON.stringify({ id: productId }),
+                            data: JSON.stringify({id: productId}),
                             success: function () {
                                 alert('Sản phẩm đã được xóa thành công!');
                                 location.reload(); // Reload trang để cập nhật danh sách sản phẩm
@@ -72,7 +72,7 @@
         <div class="container mt-5">
             <h3 class="mb-4">Xóa sản phẩm</h3>
 
-            
+
 
             <!-- Dropdown để chọn sản phẩm muốn xóa -->
             <div class="form-group">

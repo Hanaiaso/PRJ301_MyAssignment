@@ -4,6 +4,8 @@
  */
 package Product.Controller;
 
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import Plan.Entity.Product;
 import dal.ProductDBContext;
 import jakarta.servlet.ServletException;
@@ -17,24 +19,22 @@ import java.io.PrintWriter;
  *
  * @author LEGION
  */
-public class ProductCreateController extends HttpServlet {
+public class ProductCreateController extends BaseRBACCOntroller {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.getRequestDispatcher("/view/product/product_list.jsp").forward(request, response);
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        req.getRequestDispatcher("/view/product/product_list.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
-        String pname = request.getParameter("pname");
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+
+        String pname = req.getParameter("pname");
         ProductDBContext pdb = new ProductDBContext();
         Product p = new Product();
         p.setName(pname);
         pdb.insert(p);
-        response.sendRedirect("list");
+        resp.sendRedirect("list");
     }
 
 }

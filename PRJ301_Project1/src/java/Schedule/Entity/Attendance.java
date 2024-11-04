@@ -8,14 +8,16 @@ import java.sql.*;
  * @author LEGION
  */
 public class Attendance {
+
     private int id;
     private ScheduleEmployee scheduleEmployee; // Thêm trường ScheduleEmployee
-    private Date date;  
+    private Date date;
     private double alpha; // Ratio of work completed (0.0 to 1.0)
     private int quantity; // Quantity of products completed on the given date
 
     // Constructors
-    public Attendance() {}
+    public Attendance() {
+    }
 
     public Attendance(ScheduleEmployee scheduleEmployee, Date date, double alpha, int quantity) {
         this.scheduleEmployee = scheduleEmployee;

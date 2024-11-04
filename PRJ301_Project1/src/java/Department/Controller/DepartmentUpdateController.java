@@ -5,6 +5,8 @@
 package Department.Controller;
 
 import Employee.Entity.Department;
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import dal.DepartmentDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -17,30 +19,28 @@ import java.io.PrintWriter;
  *
  * @author LEGION
  */
-public class DepartmentUpdateController extends HttpServlet {
+public class DepartmentUpdateController extends BaseRBACCOntroller {
 
-     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String departmentIdParam = request.getParameter("id");
+    @Override
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        String departmentIdParam = req.getParameter("id");
         if (departmentIdParam != null && !departmentIdParam.isEmpty()) {
             int departmentId = Integer.parseInt(departmentIdParam);
 
             DepartmentDBContext ddb = new DepartmentDBContext();
             Department department = ddb.get(departmentId);
             if (department != null) {
-                request.setAttribute("department", department);
-                request.getRequestDispatcher("/view/department/department_update.jsp").forward(request, response);
+                req.setAttribute("department", department);
+                req.getRequestDispatcher("/view/department/department_update.jsp").forward(req, resp);
             }
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String idParam = request.getParameter("id");
-        String name = request.getParameter("dname");
-        String type = request.getParameter("dtype");
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        String idParam = req.getParameter("id");
+        String name = req.getParameter("dname");
+        String type = req.getParameter("dtype");
 
         if (idParam != null && !idParam.isEmpty()) {
             int id = Integer.parseInt(idParam);
@@ -53,7 +53,8 @@ public class DepartmentUpdateController extends HttpServlet {
             DepartmentDBContext ddb = new DepartmentDBContext();
             ddb.update(department);
 
-            response.sendRedirect("list");
+            resp.sendRedirect("list");
         }
     }
+
 }

@@ -5,6 +5,8 @@
 package Department.Controller;
 
 import Employee.Entity.Department;
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import dal.DepartmentDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -18,24 +20,22 @@ import java.util.ArrayList;
  *
  * @author LEGION
  */
-public class DepartmentListController extends HttpServlet {
+public class DepartmentListController extends BaseRBACCOntroller {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
         DepartmentDBContext ddb = new DepartmentDBContext();
         ArrayList<Department> d = new ArrayList<>();
         Department dept = new Department();
         d = ddb.list();
-        request.setAttribute("dl", d);
-        request.getRequestDispatcher("/view/department/department_list.jsp").forward(request, response);
-        
+        req.setAttribute("dl", d);
+        req.getRequestDispatcher("/view/department/department_list.jsp").forward(req, resp);
+
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+
     }
 
 }

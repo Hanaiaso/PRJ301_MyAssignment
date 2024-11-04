@@ -1,5 +1,7 @@
 package Product.Controller;
 
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import Plan.Entity.Product;
 import com.google.gson.Gson;
 import dal.ProductDBContext;
@@ -16,12 +18,11 @@ import java.util.ArrayList;
  *
  * @author LEGION
  */
-public class ProductUpdateController extends HttpServlet {
+public class ProductUpdateController extends BaseRBACCOntroller {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String productIdParam = request.getParameter("pid");
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        String productIdParam = req.getParameter("pid");
 
         if (productIdParam != null && !productIdParam.isEmpty()) {
             int productId = Integer.parseInt(productIdParam);
@@ -29,10 +30,10 @@ public class ProductUpdateController extends HttpServlet {
             Product product = pdb.get(productId);
             if (product != null) {
                 // Trả về thông tin sản phẩm dưới dạng JSON
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
+                resp.setContentType("application/json");
+                resp.setCharacterEncoding("UTF-8");
                 Gson gson = new Gson();
-                PrintWriter out = response.getWriter();
+                PrintWriter out = resp.getWriter();
                 out.print(gson.toJson(product));
                 out.flush();
             }
@@ -40,18 +41,17 @@ public class ProductUpdateController extends HttpServlet {
             // Nếu không có sản phẩm cụ thể, trả về danh sách sản phẩm
             ProductDBContext pdb = new ProductDBContext();
             ArrayList<Product> p = pdb.list();
-            request.setAttribute("plist", p);
-            request.getRequestDispatcher("/view/product/product_update.jsp").forward(request, response);
+            req.setAttribute("plist", p);
+            req.getRequestDispatcher("/view/product/product_update.jsp").forward(req, resp);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
         // Đọc JSON từ yêu cầu
         StringBuilder json = new StringBuilder();
         String line;
-        try (BufferedReader reader = request.getReader()) {
+        try (BufferedReader reader = req.getReader()) {
             while ((line = reader.readLine()) != null) {
                 json.append(line);
             }
@@ -66,11 +66,12 @@ public class ProductUpdateController extends HttpServlet {
         pdb.update(product);
 
         // Trả về phản hồi thành công
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        PrintWriter out = response.getWriter();
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        PrintWriter out = resp.getWriter();
         out.print("{\"status\": \"success\"}");
         out.flush();
-        
+
     }
+
 }

@@ -80,12 +80,12 @@
     </head>
     <body>
         <!-- Menu Icon -->
-        <img src="menu-icon.png" alt="Menu Icon" class="menu-icon" onclick="toggleSidebar()">
+        <img src="../../img/logo_3.jpeg" alt="Menu Icon" class="menu-icon" onclick="toggleSidebar()">
 
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <br/>
-        <br/>
+            <br/>
             <h1>Company Name</h1>
             <a href="../main" onclick="toggleSidebar()"><img src="logo.png" alt="Company Logo"></a>
             <a href="../employee/filter">Employee</a>

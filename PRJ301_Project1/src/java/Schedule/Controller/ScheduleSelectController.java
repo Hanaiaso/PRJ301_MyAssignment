@@ -4,6 +4,8 @@
  */
 package Schedule.Controller;
 
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import Schedule.Entity.ScheduleCampain;
 import dal.ScheduleCampainDBContext;
 import jakarta.servlet.ServletException;
@@ -18,25 +20,24 @@ import java.util.ArrayList;
  *
  * @author LEGION
  */
-public class ScheduleSelectController extends HttpServlet {
+public class ScheduleSelectController extends BaseRBACCOntroller {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
 
-        int plcid = Integer.parseInt(request.getParameter("plcid"));
+        int plcid = Integer.parseInt(req.getParameter("plcid"));
         ScheduleCampainDBContext scDB = new ScheduleCampainDBContext();
         ArrayList<ScheduleCampain> schedules = scDB.getSchedulesByPlanCampainId(plcid);
 
-        request.setAttribute("schedules", schedules);
-        request.setAttribute("plcid", plcid);
-        request.getRequestDispatcher("../view/plan/select_schedule.jsp").forward(request, response);
+        req.setAttribute("schedules", schedules);
+        req.setAttribute("plcid", plcid);
+        req.getRequestDispatcher("../view/plan/select_schedule.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        int scid = Integer.parseInt(request.getParameter("scid"));
-        response.sendRedirect("../scheduleemployee/create?scid=" + scid);
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        int scid = Integer.parseInt(req.getParameter("scid"));
+        resp.sendRedirect("../scheduleemployee/create?scid=" + scid);
     }
+
 }

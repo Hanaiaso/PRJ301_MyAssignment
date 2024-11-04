@@ -18,6 +18,7 @@ public class ScheduleEmployee {
     public void setAttendanceRecorded(boolean isAttendanceRecorded) {
         this.isAttendanceRecorded = isAttendanceRecorded;
     }
+
     // Getter and Setter for id
     public int getId() {
         return id;
@@ -46,7 +47,6 @@ public class ScheduleEmployee {
     }
 
     // Getter and Setter for employee list
-
     public Employee getEmployee() {
         return employee;
     }
@@ -54,7 +54,6 @@ public class ScheduleEmployee {
     public void setEmployee(Employee employee) {
         this.employee = employee;
     }
-  
 
     // New getters for properties derived from nested objects
     public String getPlanName() {

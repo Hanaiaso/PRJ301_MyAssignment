@@ -5,6 +5,8 @@
 package Employee.Controller;
 
 import Employee.Entity.Employee;
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import Plan.Entity.Plan;
 import dal.AttendanceDBContext;
 import dal.PlanDBContext;
@@ -20,19 +22,18 @@ import java.util.ArrayList;
  *
  * @author LEGION
  */
-public class BonusCalculationController extends HttpServlet {
+public class BonusCalculationController extends BaseRBACCOntroller {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
 
         // Fetch list of all available plans to display
         PlanDBContext planDB = new PlanDBContext();
         ArrayList<Plan> plans = planDB.list();
-        request.setAttribute("plans", plans);
+        req.setAttribute("plans", plans);
 
         // Get selected planId parameter
-        String planIdParam = request.getParameter("planId");
+        String planIdParam = req.getParameter("planId");
         if (planIdParam != null && !planIdParam.isEmpty()) {
             int planId = Integer.parseInt(planIdParam);
 
@@ -41,18 +42,17 @@ public class BonusCalculationController extends HttpServlet {
             ArrayList<Employee> employees = attendanceDB.getEmployeeBonusForPlan(planId);
 
             // Set attributes to be used by JSP
-            request.setAttribute("selectedPlanId", planId);
-            request.setAttribute("employees", employees);
+            req.setAttribute("selectedPlanId", planId);
+            req.setAttribute("employees", employees);
         }
 
         // Forward to JSP to display the results
-        request.getRequestDispatcher("/view/employee/bonus_list.jsp").forward(request, response);
+        req.getRequestDispatcher("/view/employee/bonus_list.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doGet(request, response);
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        doAuthorizedGet(req, resp, account);
     }
 
 }

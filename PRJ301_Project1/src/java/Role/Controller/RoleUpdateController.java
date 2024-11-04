@@ -4,8 +4,10 @@
  */
 package Role.Controller;
 
+import Login.Controller.BaseRBACCOntroller;
 import Login.Entity.Feature;
 import Login.Entity.Role;
+import Login.Entity.User;
 import dal.FeatureDBContext;
 import dal.RoleDBContext;
 import jakarta.servlet.ServletException;
@@ -20,11 +22,11 @@ import java.util.ArrayList;
  *
  * @author LEGION
  */
-public class RoleUpdateController extends HttpServlet {
-   @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String roleIdParam = request.getParameter("id");
+public class RoleUpdateController extends BaseRBACCOntroller {
+
+    @Override
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        String roleIdParam = req.getParameter("id");
         if (roleIdParam != null) {
             int roleId = Integer.parseInt(roleIdParam);
 
@@ -34,19 +36,18 @@ public class RoleUpdateController extends HttpServlet {
             Role role = roleDB.get(roleId);
             ArrayList<Feature> allFeatures = featureDB.list();
 
-            request.setAttribute("role", role);
-            request.setAttribute("allFeatures", allFeatures);
+            req.setAttribute("role", role);
+            req.setAttribute("allFeatures", allFeatures);
         }
 
-        request.getRequestDispatcher("/view/role/role_update.jsp").forward(request, response);
+        req.getRequestDispatcher("/view/role/role_update.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        int roleId = Integer.parseInt(request.getParameter("roleId"));
-        String roleName = request.getParameter("roleName");
-        String[] featureIds = request.getParameterValues("features");
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        int roleId = Integer.parseInt(req.getParameter("roleId"));
+        String roleName = req.getParameter("roleName");
+        String[] featureIds = req.getParameterValues("features");
 
         Role role = new Role();
         role.setId(roleId);
@@ -65,6 +66,7 @@ public class RoleUpdateController extends HttpServlet {
         RoleDBContext roleDB = new RoleDBContext();
         roleDB.update(role);
 
-        response.sendRedirect("list"); // Redirect back to the role list page after updating
+        resp.sendRedirect("list"); // Redirect back to the role list page after updating
     }
+
 }

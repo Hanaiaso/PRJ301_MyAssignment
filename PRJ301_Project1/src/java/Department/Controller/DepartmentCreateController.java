@@ -5,6 +5,8 @@
 package Department.Controller;
 
 import Employee.Entity.Department;
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import dal.DepartmentDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -17,14 +19,18 @@ import java.io.PrintWriter;
  *
  * @author LEGION
  */
-public class DepartmentCreateController extends HttpServlet {
+public class DepartmentCreateController extends BaseRBACCOntroller {
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        resp.sendRedirect("list");
+    }
+
+    @Override
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
         // Lấy dữ liệu từ form
-        String name = request.getParameter("dname");
-        String type = request.getParameter("dtype");
+        String name = req.getParameter("dname");
+        String type = req.getParameter("dtype");
 
         // Tạo đối tượng Department và thiết lập các giá trị
         Department dept = new Department();
@@ -36,12 +42,6 @@ public class DepartmentCreateController extends HttpServlet {
         ddb.insert(dept);
 
         // Chuyển hướng về danh sách departments
-        response.sendRedirect("list");  // Giả định rằng URL "list" sẽ dẫn tới trang danh sách departments
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.sendRedirect("list");
+        resp.sendRedirect("list");  // Giả định rằng URL "list" sẽ dẫn tới trang danh sách departments    }
     }
 }

@@ -4,8 +4,10 @@
  */
 package Role.Controller;
 
+import Login.Controller.BaseRBACCOntroller;
 import Login.Entity.Feature;
 import Login.Entity.Role;
+import Login.Entity.User;
 import dal.FeatureDBContext;
 import dal.RoleDBContext;
 import jakarta.servlet.ServletException;
@@ -20,22 +22,20 @@ import java.util.ArrayList;
  *
  * @author LEGION
  */
-public class RoleCreateController extends HttpServlet {
+public class RoleCreateController extends BaseRBACCOntroller {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
         FeatureDBContext featureDB = new FeatureDBContext();
         ArrayList<Feature> features = featureDB.list();
-        request.setAttribute("features", features);
-        request.getRequestDispatcher("/view/role/role_create.jsp").forward(request, response);
+        req.setAttribute("features", features);
+        req.getRequestDispatcher("/view/role/role_create.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String roleName = request.getParameter("rname");
-        String[] selectedFeatures = request.getParameterValues("features");
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        String roleName = req.getParameter("rname");
+        String[] selectedFeatures = req.getParameterValues("features");
 
         Role role = new Role();
         role.setName(roleName);
@@ -53,6 +53,7 @@ public class RoleCreateController extends HttpServlet {
         RoleDBContext roleDB = new RoleDBContext();
         roleDB.insert(role);
 
-        response.sendRedirect("list");  // Redirect to the role list page after successful creation
+        resp.sendRedirect("list");  // Redirect to the role list page after successful creation
     }
+
 }

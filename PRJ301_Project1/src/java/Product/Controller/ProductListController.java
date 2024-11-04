@@ -4,6 +4,8 @@
  */
 package Product.Controller;
 
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import Plan.Entity.Product;
 import dal.ProductDBContext;
 import jakarta.servlet.ServletException;
@@ -18,24 +20,20 @@ import java.util.ArrayList;
  *
  * @author LEGION
  */
-public class ProductListController extends HttpServlet {
+public class ProductListController extends BaseRBACCOntroller {
 
-  
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
         ProductDBContext pdb = new ProductDBContext();
         ArrayList<Product> p = new ArrayList<>();
         p = pdb.list();
-        request.setAttribute("pro", p);
-        request.getRequestDispatcher("/view/product/product_list.jsp").forward(request, response);
+        req.setAttribute("pro", p);
+        req.getRequestDispatcher("/view/product/product_list.jsp").forward(req, resp);
     }
 
-  
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

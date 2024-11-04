@@ -136,12 +136,12 @@
             const loginForm = document.getElementById('loginForm');
             const cancelBtn = document.querySelector('.cancelBtn');
             showFormBtn.addEventListener('click', function () {
-                loginForm.classList.add('visible'); 
-                showFormBtn.style.display = 'none'; 
+                loginForm.classList.add('visible');
+                showFormBtn.style.display = 'none';
             });
             cancelBtn.addEventListener('click', function () {
-                loginForm.classList.remove('visible'); 
-                showFormBtn.style.display = 'block'; 
+                loginForm.classList.remove('visible');
+                showFormBtn.style.display = 'block';
                 document.querySelector('input[name="username"]').value = '';
                 document.querySelector('input[name="password"]').value = '';
             });

@@ -155,16 +155,15 @@ public class ScheduleCampainDBContext extends DBContext<ScheduleCampain> {
             ex.printStackTrace();
         }
     }
-    
-     
-   @Override
+
+    @Override
     public void delete(ScheduleCampain entity) {
         String sql = "UPDATE [SchedualCampaign] SET [isWork] = 0 WHERE [scid] = ?";
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setInt(1, entity.getId());
             stm.executeUpdate();
         } catch (SQLException ex) {
-          
+
         }
     }
 

@@ -4,7 +4,9 @@
  */
 package Role.Controller;
 
+import Login.Controller.BaseRBACCOntroller;
 import Login.Entity.Role;
+import Login.Entity.User;
 import dal.RoleDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -17,12 +19,11 @@ import java.io.PrintWriter;
  *
  * @author LEGION
  */
-public class RoleDeleteController extends HttpServlet {
+public class RoleDeleteController extends BaseRBACCOntroller {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String roleIdParam = request.getParameter("id");
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        String roleIdParam = req.getParameter("id");
         if (roleIdParam != null && !roleIdParam.isEmpty()) {
             try {
                 int roleId = Integer.parseInt(roleIdParam);
@@ -34,12 +35,17 @@ public class RoleDeleteController extends HttpServlet {
                 }
 
                 // Redirect to the list page after deletion
-                response.sendRedirect("list");
+                resp.sendRedirect("list");
             } catch (NumberFormatException e) {
-                response.getWriter().println("Invalid role ID format.");
+                resp.getWriter().println("Invalid role ID format.");
             }
         } else {
-            response.getWriter().println("Role ID is required for deletion.");
+            resp.getWriter().println("Role ID is required for deletion.");
         }
+    }
+
+    @Override
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

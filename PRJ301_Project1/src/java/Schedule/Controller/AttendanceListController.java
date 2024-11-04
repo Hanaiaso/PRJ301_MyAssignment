@@ -4,6 +4,8 @@
  */
 package Schedule.Controller;
 
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import Schedule.Entity.Attendance;
 import dal.AttendanceDBContext;
 import jakarta.servlet.ServletException;
@@ -18,25 +20,23 @@ import java.util.ArrayList;
  *
  * @author LEGION
  */
-public class AttendanceListController extends HttpServlet {
+public class AttendanceListController extends BaseRBACCOntroller {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
         // Khởi tạo AttendanceDBContext để lấy danh sách Attendance
         AttendanceDBContext attendanceDB = new AttendanceDBContext();
         // Lấy danh sách tất cả các bản ghi attendance
         ArrayList<Attendance> attendances = attendanceDB.list();
-      
+
         // Đặt danh sách attendance vào request để truyền cho JSP
-        request.setAttribute("attendances", attendances);
-        request.getRequestDispatcher("../view/schedule/attendance_list.jsp").forward(request, response);
+        req.setAttribute("attendances", attendances);
+        req.getRequestDispatcher("../view/schedule/attendance_list.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

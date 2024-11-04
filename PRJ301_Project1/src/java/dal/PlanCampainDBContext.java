@@ -1,4 +1,5 @@
 package dal;
+
 import Employee.Entity.Department;
 import Plan.Entity.Plan;
 import Plan.Entity.PlanCampain;
@@ -10,8 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 public class PlanCampainDBContext extends DBContext<PlanCampain> {
-    
+
     public ArrayList<PlanCampain> getCampainsByPlanId(int plid) {
         ArrayList<PlanCampain> campains = new ArrayList<>();
         String sqlSelectCampain = "SELECT pc.plcid, pc.Quantity, pc.Estimate, p.pid, p.pname "
@@ -19,17 +21,17 @@ public class PlanCampainDBContext extends DBContext<PlanCampain> {
                 + "JOIN Product p ON pc.pid = p.pid "
                 + "WHERE pc.plid = ?";
         try (PreparedStatement stmSelectCampain = connection.prepareStatement(sqlSelectCampain)) {
-            stmSelectCampain.setInt(1, plid); 
+            stmSelectCampain.setInt(1, plid);
             ResultSet rs = stmSelectCampain.executeQuery();
             while (rs.next()) {
                 PlanCampain campain = new PlanCampain();
                 Product product = new Product();
-                product.setId(rs.getInt("pid")); 
-                product.setName(rs.getString("pname")); 
-                campain.setProduct(product); 
+                product.setId(rs.getInt("pid"));
+                product.setName(rs.getString("pname"));
+                campain.setProduct(product);
                 campain.setQuantity(rs.getInt("Quantity"));
                 campain.setCost(rs.getFloat("Estimate"));
-                campain.setId(rs.getInt("plcid")); 
+                campain.setId(rs.getInt("plcid"));
                 campains.add(campain);
             }
         } catch (SQLException ex) {
@@ -37,33 +39,38 @@ public class PlanCampainDBContext extends DBContext<PlanCampain> {
         }
         return campains;
     }
+
     @Override
     public void insert(PlanCampain entity) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
     @Override
     public void update(PlanCampain entity) {
     }
+
     @Override
     public void delete(PlanCampain entity) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
     @Override
     public ArrayList<PlanCampain> list() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
     @Override
     public PlanCampain get(int id) {
         PlanCampain planCampain = null;
-        String sql = "SELECT pc.plcid, pc.Quantity, " +
-                     "p.pid, p.pname, " +
-                     "pl.plid, pl.plname, pl.StartDate, pl.EndDate, pl.isDone, " +
-                     "d.did, d.dname, d.type " +
-                     "FROM PlanCampain pc " +
-                     "JOIN Product p ON pc.pid = p.pid " +
-                     "JOIN [Plan] pl ON pc.plid = pl.plid " +
-                     "LEFT JOIN Department d ON pl.did = d.did " +
-                     "WHERE pl.isDone = 0 AND pc.plcid = ?";
+        String sql = "SELECT pc.plcid, pc.Quantity, "
+                + "p.pid, p.pname, "
+                + "pl.plid, pl.plname, pl.StartDate, pl.EndDate, pl.isDone, "
+                + "d.did, d.dname, d.type "
+                + "FROM PlanCampain pc "
+                + "JOIN Product p ON pc.pid = p.pid "
+                + "JOIN [Plan] pl ON pc.plid = pl.plid "
+                + "LEFT JOIN Department d ON pl.did = d.did "
+                + "WHERE pl.isDone = 0 AND pc.plcid = ?";
 
         try {
             PreparedStatement stm = connection.prepareStatement(sql);

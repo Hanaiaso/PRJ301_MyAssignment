@@ -7,6 +7,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 
 public class Employee {
+
     private int id;
     private String name;
     private int additionalBonus;
@@ -17,7 +18,7 @@ public class Employee {
     private boolean iswork;
     private User createdby;
     private User updatedby;
-    private java.util.Date updatedtime; 
+    private java.util.Date updatedtime;
     private Department dept;
     private ArrayList<Attendance> attendances = new ArrayList<>();
 
@@ -135,5 +136,5 @@ public class Employee {
 
     public void setUpdatedtime(java.util.Date updatedtime) {
         this.updatedtime = updatedtime;
-    }     
+    }
 }

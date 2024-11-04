@@ -12,7 +12,7 @@
                 const checkboxes = document.querySelectorAll('input[name="eids"]:checked');
                 if (checkboxes.length === 0) {
                     alert("Please select at least one employee to delete.");
-                    return false; 
+                    return false;
                 }
                 var result = confirm("Are you sure you want to delete the selected employees?");
                 return result;

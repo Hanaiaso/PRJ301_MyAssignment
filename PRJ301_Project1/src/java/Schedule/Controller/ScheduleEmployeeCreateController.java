@@ -1,6 +1,8 @@
 package Schedule.Controller;
 
 import Employee.Entity.Employee;
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import Plan.Entity.PlanCampain;
 import Schedule.Entity.ScheduleCampain;
 import dal.EmployeeDBContext;
@@ -16,13 +18,12 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScheduleEmployeeCreateController extends HttpServlet {
+public class ScheduleEmployeeCreateController extends BaseRBACCOntroller {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
 
-        int scid = Integer.parseInt(request.getParameter("scid"));
+        int scid = Integer.parseInt(req.getParameter("scid"));
         ScheduleCampainDBContext scDB = new ScheduleCampainDBContext();
         ScheduleCampain schedule = scDB.get(scid);
         int departmentId = schedule.getPlancampain().getPlan().getDept().getId();
@@ -31,59 +32,59 @@ public class ScheduleEmployeeCreateController extends HttpServlet {
 //        System.out.println("Department ID: " + departmentId);
 //        System.out.println("Total employees retrieved: " + employees.size());
         // Gửi dữ liệu sang JSP
-        request.setAttribute("schedule", schedule);
-        request.setAttribute("employees", employees);
-        request.getRequestDispatcher("../view/schedule/assign_employee.jsp").forward(request, response);
+        req.setAttribute("schedule", schedule);
+        req.setAttribute("employees", employees);
+        req.getRequestDispatcher("../view/schedule/assign_employee.jsp").forward(req, resp);
     }
 
     @Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
 
-    int scid = Integer.parseInt(request.getParameter("scid"));
-    String[] employeeIds = request.getParameterValues("eid");
+        int scid = Integer.parseInt(req.getParameter("scid"));
+        String[] employeeIds = req.getParameterValues("eid");
 
-    ScheduleEmployeeDBContext seDB = new ScheduleEmployeeDBContext();
-    ScheduleCampainDBContext scDB = new ScheduleCampainDBContext();
-    ScheduleCampain schedule = scDB.get(scid);
+        ScheduleEmployeeDBContext seDB = new ScheduleEmployeeDBContext();
+        ScheduleCampainDBContext scDB = new ScheduleCampainDBContext();
+        ScheduleCampain schedule = scDB.get(scid);
 
-    if (employeeIds != null && employeeIds.length > 0) {
-        int totalAssigned = 0;
-        boolean errorOccurred = false;
-        
-        List<Integer> eids = new ArrayList<>();
-        List<Integer> quantities = new ArrayList<>();
+        if (employeeIds != null && employeeIds.length > 0) {
+            int totalAssigned = 0;
+            boolean errorOccurred = false;
 
-        for (String employeeId : employeeIds) {
-            int eid = Integer.parseInt(employeeId);
-            String quantityParam = request.getParameter("quantity-" + eid);
+            List<Integer> eids = new ArrayList<>();
+            List<Integer> quantities = new ArrayList<>();
 
-            if (quantityParam != null && !quantityParam.isEmpty()) {
-                int quantity = Integer.parseInt(quantityParam);
-                totalAssigned += quantity;
+            for (String employeeId : employeeIds) {
+                int eid = Integer.parseInt(employeeId);
+                String quantityParam = req.getParameter("quantity-" + eid);
 
-                // Kiểm tra nếu số lượng phân công vượt quá số lượng còn lại
-                if (totalAssigned > (schedule.getQuantity() - schedule.getAssignedQuantity())) {
-                    request.setAttribute("errorMessage", "Tổng số lượng phân công vượt quá giới hạn cho phép.");
-                    errorOccurred = true;
-                    break;
+                if (quantityParam != null && !quantityParam.isEmpty()) {
+                    int quantity = Integer.parseInt(quantityParam);
+                    totalAssigned += quantity;
+
+                    // Kiểm tra nếu số lượng phân công vượt quá số lượng còn lại
+                    if (totalAssigned > (schedule.getQuantity() - schedule.getAssignedQuantity())) {
+                        req.setAttribute("errorMessage", "Tổng số lượng phân công vượt quá giới hạn cho phép.");
+                        errorOccurred = true;
+                        break;
+                    }
+
+                    // Thêm vào danh sách để insert sau
+                    eids.add(eid);
+                    quantities.add(quantity);
                 }
-
-                // Thêm vào danh sách để insert sau
-                eids.add(eid);
-                quantities.add(quantity);
             }
+
+            if (!errorOccurred) {
+                // Sử dụng hàm insertMultipleAssignments để lưu tất cả nhân viên cùng một lúc
+                seDB.insertMultipleAssignments(scid, eids, quantities);
+                req.setAttribute("successMessage", "Phân công thành công.");
+            }
+        } else {
+            req.setAttribute("errorMessage", "Không có nhân viên nào được chọn để phân công.");
         }
 
-        if (!errorOccurred) {
-            // Sử dụng hàm insertMultipleAssignments để lưu tất cả nhân viên cùng một lúc
-            seDB.insertMultipleAssignments(scid, eids, quantities);
-            request.setAttribute("successMessage", "Phân công thành công.");
-        }
-    } else {
-        request.setAttribute("errorMessage", "Không có nhân viên nào được chọn để phân công.");
+        doAuthorizedGet(req, resp, account);
     }
 
-    doGet(request, response);
-}
 }

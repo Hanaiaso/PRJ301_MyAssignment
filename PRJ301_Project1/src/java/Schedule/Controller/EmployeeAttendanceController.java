@@ -1,6 +1,8 @@
 package Schedule.Controller;
 
 import Employee.Entity.Employee;
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import Plan.Entity.Plan;
 import Plan.Entity.PlanCampain;
 import Schedule.Entity.ScheduleCampain;
@@ -22,64 +24,62 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmployeeAttendanceController extends HttpServlet {
+public class EmployeeAttendanceController extends BaseRBACCOntroller {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
         // Lấy tham số "plid", "plcid", "scid" từ yêu cầu
-        String planIdParam = request.getParameter("plid");
-        String planCampainIdParam = request.getParameter("plcid");
-        String scheduleIdParam = request.getParameter("scid");
+        String planIdParam = req.getParameter("plid");
+        String planCampainIdParam = req.getParameter("plcid");
+        String scheduleIdParam = req.getParameter("scid");
 
         if (planIdParam != null) {
             int plid = Integer.parseInt(planIdParam);
             PlanCampainDBContext planCampainDB = new PlanCampainDBContext();
             ArrayList<PlanCampain> planCampains = planCampainDB.getCampainsByPlanId(plid);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
             String json = new Gson().toJson(planCampains);
-            response.getWriter().print(json);
+            resp.getWriter().print(json);
         } else if (planCampainIdParam != null) {
             int plcid = Integer.parseInt(planCampainIdParam);
             ScheduleCampainDBContext scheduleCampainDB = new ScheduleCampainDBContext();
             ArrayList<ScheduleCampain> scheduleCampains = scheduleCampainDB.getSchedulesByPlanCampainId(plcid);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
             String json = new Gson().toJson(scheduleCampains);
-            response.getWriter().print(json);
+            resp.getWriter().print(json);
         } else if (scheduleIdParam != null) {
-        int scid = Integer.parseInt(scheduleIdParam);
-        ScheduleEmployeeDBContext scheduleEmployeeDB = new ScheduleEmployeeDBContext();
-        ArrayList<ScheduleEmployee> scheduleEmployees = scheduleEmployeeDB.getEmployeesByScheduleId(scid);
+            int scid = Integer.parseInt(scheduleIdParam);
+            ScheduleEmployeeDBContext scheduleEmployeeDB = new ScheduleEmployeeDBContext();
+            ArrayList<ScheduleEmployee> scheduleEmployees = scheduleEmployeeDB.getEmployeesByScheduleId(scid);
 
-        // Kiểm tra xem nhân viên đã được chấm công chưa
-        AttendanceDBContext attendanceDB = new AttendanceDBContext();
-        for (ScheduleEmployee scheduleEmployee : scheduleEmployees) {
-            boolean isRecorded = attendanceDB.isAttendanceRecorded(scheduleEmployee.getId());
-            scheduleEmployee.setAttendanceRecorded(isRecorded);
-        }
+            // Kiểm tra xem nhân viên đã được chấm công chưa
+            AttendanceDBContext attendanceDB = new AttendanceDBContext();
+            for (ScheduleEmployee scheduleEmployee : scheduleEmployees) {
+                boolean isRecorded = attendanceDB.isAttendanceRecorded(scheduleEmployee.getId());
+                scheduleEmployee.setAttendanceRecorded(isRecorded);
+            }
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        String json = new Gson().toJson(scheduleEmployees);
-        response.getWriter().print(json);
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            String json = new Gson().toJson(scheduleEmployees);
+            resp.getWriter().print(json);
         } else {
             PlanDBContext planDB = new PlanDBContext();
             ArrayList<Plan> plans = planDB.list();
-            request.setAttribute("plans", plans);
-            request.getRequestDispatcher("../view/schedule/attendance.jsp").forward(request, response);
+            req.setAttribute("plans", plans);
+            req.getRequestDispatcher("../view/schedule/attendance.jsp").forward(req, resp);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
         // Lấy scheduleCampainId từ form đã gửi
-        String scheduleCampainIdParam = request.getParameter("scheduleCampainId");
+        String scheduleCampainIdParam = req.getParameter("scheduleCampainId");
 
         if (scheduleCampainIdParam == null || scheduleCampainIdParam.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Schedule Campaign ID is missing");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Schedule Campaign ID is missing");
             return;
         }
 
@@ -98,8 +98,8 @@ public class EmployeeAttendanceController extends HttpServlet {
         for (ScheduleEmployee scheduleEmployee : scheduleEmployees) {
             int seid = scheduleEmployee.getId(); // ScheduleEmployee ID
             int employeeId = scheduleEmployee.getEmployee().getId();
-            String quantityParam = request.getParameter("quantity-" + employeeId);
-            String alphaParam = request.getParameter("alpha-" + employeeId);
+            String quantityParam = req.getParameter("quantity-" + employeeId);
+            String alphaParam = req.getParameter("alpha-" + employeeId);
 
             // Kiểm tra xem giá trị quantity và alpha có không rỗng và hợp lệ
             if (quantityParam != null && !quantityParam.isEmpty()
@@ -134,7 +134,7 @@ public class EmployeeAttendanceController extends HttpServlet {
         }
 
         // Chuyển hướng lại trang để hiển thị thông báo thành công
-        response.sendRedirect("attendance");
+        resp.sendRedirect("attendance");
     }
 
 }

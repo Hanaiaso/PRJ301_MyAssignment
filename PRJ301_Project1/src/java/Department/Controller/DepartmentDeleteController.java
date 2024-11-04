@@ -5,6 +5,8 @@
 package Department.Controller;
 
 import Employee.Entity.Department;
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import dal.DepartmentDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -17,12 +19,11 @@ import java.io.PrintWriter;
  *
  * @author LEGION
  */
-public class DepartmentDeleteController extends HttpServlet {
+public class DepartmentDeleteController extends BaseRBACCOntroller {
 
-      @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String departmentIdParam = request.getParameter("id");
+    @Override
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        String departmentIdParam = req.getParameter("id");
         if (departmentIdParam != null && !departmentIdParam.isEmpty()) {
             int departmentId = Integer.parseInt(departmentIdParam);
 
@@ -36,12 +37,12 @@ public class DepartmentDeleteController extends HttpServlet {
         }
 
         // Chuyển hướng về danh sách departments
-        response.sendRedirect("list");
+        resp.sendRedirect("list");
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doGet(request, response);
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        doGet(req, resp);
     }
+
 }

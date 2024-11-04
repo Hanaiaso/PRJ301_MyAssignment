@@ -11,9 +11,9 @@
     <body>
         <div class="container mt-5">
             <h3 class="mb-4 text-center">Update Employee Information</h3>
-            
-         
-            
+
+
+
             <!-- Employee Update Form -->
             <form action="update" method="POST" id="employeeUpdateForm">
                 <div class="form-group">
@@ -21,7 +21,7 @@
                     <input type="text" id="empId" class="form-control" value="${requestScope.e.id}" readonly />
                     <input type="hidden" name="id" value="${requestScope.e.id}" />
                 </div>
-                
+
                 <div class="form-group">
                     <label for="empName">Name:</label>
                     <input type="text" id="empName" name="name" class="form-control" value="${requestScope.e.name}" required />

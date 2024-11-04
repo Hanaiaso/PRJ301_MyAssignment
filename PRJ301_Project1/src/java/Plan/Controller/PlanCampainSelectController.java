@@ -4,6 +4,8 @@
  */
 package Plan.Controller;
 
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import Plan.Entity.PlanCampain;
 import dal.PlanCampainDBContext;
 import jakarta.servlet.ServletException;
@@ -18,26 +20,26 @@ import java.util.List;
  *
  * @author LEGION
  */
-public class PlanCampainSelectController extends HttpServlet {
+public class PlanCampainSelectController extends BaseRBACCOntroller {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+     protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
 
-        int plid = Integer.parseInt(request.getParameter("plid"));
+        int plid = Integer.parseInt(req.getParameter("plid"));
         PlanCampainDBContext planCampainDB = new PlanCampainDBContext();
         List<PlanCampain> planCampains = planCampainDB.getCampainsByPlanId(plid);
 
         // Gửi danh sách chiến dịch sang JSP
-        request.setAttribute("planCampains", planCampains);
-        request.setAttribute("plid", plid);
-        request.getRequestDispatcher("../view/plan/select_campain.jsp").forward(request, response);
+        req.setAttribute("planCampains", planCampains);
+        req.setAttribute("plid", plid);
+        req.getRequestDispatcher("../view/plan/select_campain.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        int plcid = Integer.parseInt(request.getParameter("plcid"));
-        response.sendRedirect("../schedule/select?plcid=" + plcid);
+     protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        int plcid = Integer.parseInt(req.getParameter("plcid"));
+        resp.sendRedirect("../schedule/select?plcid=" + plcid);
     }
+
+    
 }

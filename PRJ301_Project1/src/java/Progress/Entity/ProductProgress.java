@@ -11,6 +11,7 @@ import Plan.Entity.Product;
  * @author LEGION
  */
 public class ProductProgress {
+
     private Product product;
     private int totalProducts;
     private int completedProducts;
@@ -47,5 +48,5 @@ public class ProductProgress {
     public void setRemainingProducts(int remainingProducts) {
         this.remainingProducts = remainingProducts;
     }
-    
+
 }

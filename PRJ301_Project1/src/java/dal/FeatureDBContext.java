@@ -4,7 +4,6 @@
  */
 package dal;
 
-
 import Login.Entity.Feature;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @author LEGION
  */
-public class FeatureDBContext extends DBContext<Feature>{
+public class FeatureDBContext extends DBContext<Feature> {
 
     @Override
     public void insert(Feature entity) {
@@ -34,7 +33,7 @@ public class FeatureDBContext extends DBContext<Feature>{
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-        @Override
+    @Override
     public ArrayList<Feature> list() {
         String sql = "SELECT fid, fname, url FROM Feature";
         ArrayList<Feature> features = new ArrayList<>();
@@ -70,5 +69,5 @@ public class FeatureDBContext extends DBContext<Feature>{
     public Feature get(int id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
 }

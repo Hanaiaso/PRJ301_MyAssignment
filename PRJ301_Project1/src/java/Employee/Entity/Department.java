@@ -18,7 +18,6 @@ public class Department {
     public void setIsWork(boolean isWork) {
         this.isWork = isWork;
     }
-    
 
     public int getTotalEmployees() {
         return totalEmployees;
@@ -27,7 +26,6 @@ public class Department {
     public void setTotalEmployees(int totalEmployees) {
         this.totalEmployees = totalEmployees;
     }
-     
 
     public String getType() {
         return type;

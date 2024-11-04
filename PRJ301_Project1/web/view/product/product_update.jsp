@@ -11,8 +11,8 @@
     <body>
         <div class="container mt-5">
             <h3 class="mb-4">Cập Nhật Sản Phẩm</h3>
-            
-           
+
+
             <!-- Dropdown để chọn sản phẩm muốn cập nhật -->
             <div class="form-group">
                 <label>Chọn sản phẩm bạn muốn cập nhật:</label>
@@ -38,7 +38,7 @@
                     <button type="button" id="updateButton" class="btn btn-primary">Cập Nhật</button>
                 </form>
             </div>
-            
+
             <br/>
             <a href="javascript:history.back()" class="btn btn-secondary mt-3">Quay lại</a>
         </div>
@@ -61,7 +61,7 @@
                         $.ajax({
                             url: 'update',
                             method: 'GET',
-                            data: { pid: productId },
+                            data: {pid: productId},
                             dataType: 'json',
                             success: function (data) {
                                 // Hiển thị form và điền thông tin vào
@@ -88,7 +88,7 @@
                         url: 'update',
                         method: 'POST',
                         contentType: 'application/json',
-                        data: JSON.stringify({ id: productId, name: productName }),
+                        data: JSON.stringify({id: productId, name: productName}),
                         success: function () {
                             alert('Sản phẩm đã được cập nhật thành công!');
                             location.reload(); // Reload trang để cập nhật danh sách sản phẩm

@@ -4,6 +4,7 @@
  */
 package User.Controller;
 
+import Login.Controller.BaseRBACCOntroller;
 import Login.Entity.Role;
 import Login.Entity.User;
 import com.google.gson.Gson;
@@ -22,39 +23,37 @@ import java.util.ArrayList;
  *
  * @author LEGION
  */
-public class UserUpdateController extends HttpServlet {
+public class UserUpdateController extends BaseRBACCOntroller {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
         UserDBContext udb = new UserDBContext();
-        String userId = request.getParameter("username");
+        String userId = req.getParameter("username");
 
         if (userId != null && !userId.isEmpty()) {
             User user = udb.get(userId);
             if (user != null) {
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
+                resp.setContentType("application/json");
+                resp.setCharacterEncoding("UTF-8");
                 Gson gson = new Gson();
-                response.getWriter().print(gson.toJson(user));
+                resp.getWriter().print(gson.toJson(user));
                 return;
             }
         }
 
         ArrayList<User> userList = udb.list();
         ArrayList<Role> rolesList = new RoleDBContext().list(); // Thêm phần này để lấy danh sách các vai trò
-        request.setAttribute("userList", userList);
-        request.setAttribute("roles", rolesList);
-        request.getRequestDispatcher("/view/user/user_update.jsp").forward(request, response);
+        req.setAttribute("userList", userList);
+        req.setAttribute("roles", rolesList);
+        req.getRequestDispatcher("/view/user/user_update.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
         // Đọc JSON từ yêu cầu
         StringBuilder json = new StringBuilder();
         String line;
-        try (BufferedReader reader = request.getReader()) {
+        try (BufferedReader reader = req.getReader()) {
             while ((line = reader.readLine()) != null) {
                 json.append(line);
             }
@@ -69,9 +68,9 @@ public class UserUpdateController extends HttpServlet {
         udb.update(user);
 
         // Trả về phản hồi thành công
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().print("{\"status\": \"success\"}");
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().print("{\"status\": \"success\"}");
     }
 
 }

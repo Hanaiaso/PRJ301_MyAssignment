@@ -1,4 +1,5 @@
 package dal;
+
 import Employee.Entity.Department;
 import Employee.Entity.Employee;
 import Login.Entity.User;
@@ -9,62 +10,64 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 public class EmployeeDBContext extends DBContext<Employee> {
+
     public ArrayList<Employee> getEmployeesByDepartmentId(int departmentId) {
-    ArrayList<Employee> employees = new ArrayList<>();
-    String sql = "SELECT e.eid, e.ename, e.gender, e.address, e.dob, e.salary, e.isWork, " +
-                 "e.createdby, e.updatedby, e.updatedtime, d.did, d.dname, d.type " +
-                 "FROM Employee e " +
-                 "JOIN Department d ON e.did = d.did " +
-                 "WHERE e.did = ? AND e.isWork = 1";
+        ArrayList<Employee> employees = new ArrayList<>();
+        String sql = "SELECT e.eid, e.ename, e.gender, e.address, e.dob, e.salary, e.isWork, "
+                + "e.createdby, e.updatedby, e.updatedtime, d.did, d.dname, d.type "
+                + "FROM Employee e "
+                + "JOIN Department d ON e.did = d.did "
+                + "WHERE e.did = ? AND e.isWork = 1";
 
-    try {
-        PreparedStatement stm = connection.prepareStatement(sql);
-        stm.setInt(1, departmentId);
-        ResultSet rs = stm.executeQuery();
-        while (rs.next()) {
-            Employee employee = new Employee();
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, departmentId);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                Employee employee = new Employee();
 
-            // Thiết lập các thuộc tính của Employee
-            employee.setId(rs.getInt("eid"));
-            employee.setName(rs.getString("ename"));
-            employee.setGender(rs.getBoolean("gender"));
-            employee.setAddress(rs.getString("address"));
-            employee.setDob(rs.getDate("dob"));
-            employee.setSalary(rs.getDouble("salary"));
-            employee.setIswork(rs.getBoolean("isWork"));
-            employee.setUpdatedtime(rs.getTimestamp("updatedtime"));
+                // Thiết lập các thuộc tính của Employee
+                employee.setId(rs.getInt("eid"));
+                employee.setName(rs.getString("ename"));
+                employee.setGender(rs.getBoolean("gender"));
+                employee.setAddress(rs.getString("address"));
+                employee.setDob(rs.getDate("dob"));
+                employee.setSalary(rs.getDouble("salary"));
+                employee.setIswork(rs.getBoolean("isWork"));
+                employee.setUpdatedtime(rs.getTimestamp("updatedtime"));
 
-            // Thiết lập đối tượng Department cho Employee
-            Department dept = new Department();
-            dept.setId(rs.getInt("did"));
-            dept.setName(rs.getString("dname"));
-            dept.setType(rs.getString("type"));
-            employee.setDept(dept);
+                // Thiết lập đối tượng Department cho Employee
+                Department dept = new Department();
+                dept.setId(rs.getInt("did"));
+                dept.setName(rs.getString("dname"));
+                dept.setType(rs.getString("type"));
+                employee.setDept(dept);
 
-            // Thêm đối tượng Employee vào danh sách
-            employees.add(employee);
+                // Thêm đối tượng Employee vào danh sách
+                employees.add(employee);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
 
-    } catch (SQLException ex) {
-        ex.printStackTrace();
+        return employees;
     }
-
-    return employees;
-}
 
     public ArrayList<Employee> search(Integer id, String name, Boolean gender, String address, Date from, Date to, Integer did) {
         String sql = "SELECT e.eid, e.ename, e.gender, e.address, e.dob, d.did, d.dname, d.type "
                 + "FROM Employee e "
                 + "INNER JOIN Department d ON e.did = d.did "
-                + "WHERE e.isWork = 1";  
+                + "WHERE e.isWork = 1";
         ArrayList<Employee> emps = new ArrayList<>();
         ArrayList<Object> paramValues = new ArrayList<>();
-        if (id != null && id > 0) {  
+        if (id != null && id > 0) {
             sql += " AND e.eid = ?";
             paramValues.add(id);
         }
-        if (name != null && !name.trim().isEmpty()) {  
+        if (name != null && !name.trim().isEmpty()) {
             sql += " AND e.ename LIKE ?";
             paramValues.add("%" + name + "%");
         }
@@ -72,7 +75,7 @@ public class EmployeeDBContext extends DBContext<Employee> {
             sql += " AND e.gender = ?";
             paramValues.add(gender);
         }
-        if (address != null && !address.trim().isEmpty()) {  
+        if (address != null && !address.trim().isEmpty()) {
             sql += " AND e.[address] LIKE ?";
             paramValues.add("%" + address + "%");
         }
@@ -84,7 +87,7 @@ public class EmployeeDBContext extends DBContext<Employee> {
             sql += " AND e.dob <= ?";
             paramValues.add(to);
         }
-        if (did != null && did > 0) {  
+        if (did != null && did > 0) {
             sql += " AND d.did = ?";
             paramValues.add(did);
         }
@@ -113,6 +116,7 @@ public class EmployeeDBContext extends DBContext<Employee> {
         }
         return emps;
     }
+
     @Override
     public void insert(Employee entity) {
         String sql_insert = "INSERT INTO [Employee]\n"
@@ -168,6 +172,7 @@ public class EmployeeDBContext extends DBContext<Employee> {
             }
         }
     }
+
     @Override
     public void update(Employee entity) {
         String sql_update = "UPDATE [Employee]\n"
@@ -202,6 +207,7 @@ public class EmployeeDBContext extends DBContext<Employee> {
             }
         }
     }
+
     @Override
     public void delete(Employee entity) {
         String sql_update = "UPDATE Employee SET isWork = 0 WHERE eid = ?";
@@ -220,31 +226,33 @@ public class EmployeeDBContext extends DBContext<Employee> {
             }
         }
     }
+
     public void delete(String[] eids) {
-    String sql_update = "UPDATE Employee SET isWork = 0 WHERE eid = ?";
-    PreparedStatement stm_update = null;
-    try {
-        stm_update = connection.prepareStatement(sql_update);
-        for (String eid : eids) {
-            stm_update.setInt(1, Integer.parseInt(eid)); 
-            stm_update.addBatch(); 
-        }
-        stm_update.executeBatch();
-    } catch (SQLException ex) {
-        Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
-    } finally {
+        String sql_update = "UPDATE Employee SET isWork = 0 WHERE eid = ?";
+        PreparedStatement stm_update = null;
         try {
-            if (stm_update != null) {
-                stm_update.close(); 
+            stm_update = connection.prepareStatement(sql_update);
+            for (String eid : eids) {
+                stm_update.setInt(1, Integer.parseInt(eid));
+                stm_update.addBatch();
             }
-            if (connection != null) {
-                connection.close(); 
-            }
+            stm_update.executeBatch();
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (stm_update != null) {
+                    stm_update.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(EmployeeDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
-}
+
     @Override
     public ArrayList<Employee> list() {
         ArrayList<Employee> emps = new ArrayList<>();
@@ -281,6 +289,7 @@ public class EmployeeDBContext extends DBContext<Employee> {
         }
         return emps;
     }
+
     @Override
     public Employee get(int id) {
         PreparedStatement command = null;

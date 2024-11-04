@@ -1,4 +1,7 @@
 package Plan.Controller;
+
+import Login.Controller.BaseRBACCOntroller;
+import Login.Entity.User;
 import Plan.Entity.Plan;
 import dal.PlanDBContext;
 import jakarta.servlet.ServletException;
@@ -7,23 +10,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-public class PlanDeleteController extends HttpServlet { 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {      
-    }
+
+public class PlanDeleteController extends BaseRBACCOntroller {
+
+  
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    protected void doAuthorizedGet(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+      
     }
+
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
+    protected void doAuthorizedPost(HttpServletRequest req, HttpServletResponse resp, User account) throws ServletException, IOException {
+        int id = Integer.parseInt(req.getParameter("id"));
         Plan e = new Plan();
         e.setId(id);
         PlanDBContext pdb = new PlanDBContext();
         pdb.delete(e);
-        response.sendRedirect("list");
+        resp.sendRedirect("list");
     }
+
+  
 }
